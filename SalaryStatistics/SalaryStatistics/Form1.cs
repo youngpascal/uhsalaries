@@ -57,11 +57,24 @@ namespace SalaryStatistics
                 {
                     // get the first worksheet in the workbook
                     ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
-                    int col = 2; //The item description
-                    // output the data in column 2
-                    for (int row = 2; row < 20; row++)
+
+                    int deletedRows = 0;
+                    int col = 2;
+
+                    //Delete all the extra rows in the first 
+                    for (int row = 1; row < 51; row++)
+                    {
+                        if (worksheet.Cells[row, col].Value == null)
+                        {
+                            worksheet.DeleteRow(row, 1, true);
+                            deletedRows++;
+                        }
+                    }
+
+                    for (int row = 1; row < 51 - deletedRows; row++ )
                         Console.WriteLine("\tCell({0},{1}).Value={2}", row, col, worksheet.Cells[row, col].Value);
 
+                    Console.WriteLine("\tDeleted Rows: {0}", deletedRows);
                 } // the using statement automatically calls Dispose() which closes the package.
         }//end form load
 
