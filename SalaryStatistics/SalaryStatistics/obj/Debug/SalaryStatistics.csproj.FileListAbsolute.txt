@@ -1,7 +1,6 @@
 C:\Users\Kyle Johnston\Documents\uhsalaries\SalaryStatistics\SalaryStatistics\bin\Debug\SalaryStatistics.exe.config
 C:\Users\Kyle Johnston\Documents\uhsalaries\SalaryStatistics\SalaryStatistics\bin\Debug\SalaryStatistics.exe
 C:\Users\Kyle Johnston\Documents\uhsalaries\SalaryStatistics\SalaryStatistics\bin\Debug\SalaryStatistics.pdb
-C:\Users\Kyle Johnston\Documents\uhsalaries\SalaryStatistics\SalaryStatistics\bin\Debug\EPPlus.dll
 C:\Users\Kyle Johnston\Documents\uhsalaries\SalaryStatistics\SalaryStatistics\obj\Debug\SalaryStatistics.csprojResolveAssemblyReference.cache
 C:\Users\Kyle Johnston\Documents\uhsalaries\SalaryStatistics\SalaryStatistics\obj\Debug\SalaryStatistics.Form1.resources
 C:\Users\Kyle Johnston\Documents\uhsalaries\SalaryStatistics\SalaryStatistics\obj\Debug\SalaryStatistics.Properties.Resources.resources

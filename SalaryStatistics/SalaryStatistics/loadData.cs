@@ -15,7 +15,7 @@ namespace SalaryStatistics
        public class FileDTO
         {
             public string Name { get; set; }
-            public long Size {get;set;}
+            public long Size {get; set;}
             public DateTime Created {get;set;}
             public DateTime LastModified {get;set;}
 

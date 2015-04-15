@@ -68,6 +68,7 @@ namespace SalaryStatistics
                         {
                             worksheet.DeleteRow(row, 1, true);
                             deletedRows++;
+                            row--;
                         }
                     }
 
