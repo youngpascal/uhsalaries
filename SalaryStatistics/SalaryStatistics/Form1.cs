@@ -16,6 +16,7 @@ namespace SalaryStatistics
     public partial class Form1 : Form
     {
         private String filePath = "";
+        Data theData;
 
         public Form1()
         {
@@ -52,36 +53,24 @@ namespace SalaryStatistics
 
                // myStream.Close();
             }//end if dialogresult=ok
-                FileInfo existingFile = new FileInfo(filePath);
-                using (ExcelPackage package = new ExcelPackage(existingFile))
-                {
-                    // get the first worksheet in the workbook
-                    ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
-
-                    int deletedRows = 0;
-                    int col = 2;
-
-                    //Delete all the extra rows in the first 
-                    for (int row = 1; row < 51; row++)
-                    {
-                        if (worksheet.Cells[row, col].Value == null)
-                        {
-                            worksheet.DeleteRow(row, 1, true);
-                            deletedRows++;
-                            row--;
-                        }
-                    }
-
-                    for (int row = 1; row < 51 - deletedRows; row++ )
-                        Console.WriteLine("\tCell({0},{1}).Value={2}", row, col, worksheet.Cells[row, col].Value);
-
-                    Console.WriteLine("\tDeleted Rows: {0}", deletedRows);
-                } // the using statement automatically calls Dispose() which closes the package.
+                
         }//end form load
 
         public String getFilePath()
         {
             return filePath;
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            int constantL = int.Parse(textBox1.Text);
+            int constantD = int.Parse(textBox2.Text);
+            int constantK = int.Parse(textBox3.Text);
+
+            theData = new Data(filePath);
+            theData.prepare();
+            //theData.process();
+            //theData.close();
         }
 
 
