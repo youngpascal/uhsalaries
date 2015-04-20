@@ -27,21 +27,32 @@ namespace SalaryStatistics
         }
 
         //Uses the searchForHeader's function to find the header row and delete everything above that
-        //
         public void prepare()
        {
             //Get the first worksheet in the workbook
                 ExcelWorksheet sourceData = excelFile.Workbook.Worksheets[1];
             //Create a new worksheet
-                ExcelWorksheet preparedData = excelFile.Workbook.Worksheets["Prepared Data"];
+                ExcelWorksheet preparedData;
+                if (excelFile.Workbook.Worksheets["Prepared Data"] == null)
+                {
+                    preparedData = excelFile.Workbook.Worksheets.Add("Prepared Data");
+                }
+                else
+                {
+                    preparedData = excelFile.Workbook.Worksheets["Prepared Data"];
+
+                }
             //Tracks the number of rows from sourceData that are ignored
                 int ignoredRows = 0;
             //Gets the index of the header row in sourceData, everything above this is ignored
-                int headerRow = 7; //getHeaderRow("Job Title");
+                int headerRow = 1; // getHeaderRow("Job Title");
             //The names of the columns we want in Prepared Data
                 string[] keyColumnNames = {"Job Title"};
             //The indexes of where the desired columns are in sourceData
-                Dictionary<string, int> keyColumns = getKeyColumns(sourceData, keyColumnNames, headerRow);
+                Dictionary<string, int> keyColumns = new Dictionary<string,int>(); //getKeyColumns(sourceData, keyColumnNames, headerRow);
+                keyColumns.Add("Job Title", 2);
+                keyColumns.Add("Total Salary", 12);
+                keyColumns.Add("Pos ID Code", 27);
             //Keeps track of which row and column we're inserting to in the preparedData workshet
                 int insertRow = 1;
                 int insertCol = 1;
@@ -83,16 +94,11 @@ namespace SalaryStatistics
         {
             int row = 1;
             int col = 1;
-            int numCols = 1;
+            int numCols;
             int numRows = 1;
             bool foundIt = false;
             ExcelWorksheet currentWorksheet = excelFile.Workbook.Worksheets[1];
-
-            //count columns in document
-            while (currentWorksheet.Cells[numRows, numCols].Value != null)
-            {
-                numCols++;
-            }
+            numCols = currentWorksheet.Dimension.End.Column;
 
             //search 1st row of columna for header
             while (foundIt != true)
@@ -104,14 +110,14 @@ namespace SalaryStatistics
                         foundIt = true;
                         Console.WriteLine("\tFound the header identification string '" + header + "' in column " + col);
                         return col;
-                    }//end if
-                }//end col for
+                    }
+                }
+                row++;
             }//end while
 
             Console.WriteLine("getHeaderRow() returning.");
             return col;
         }
-
 
         //UNUSED
         private void populateWorksheet(string title)
@@ -124,12 +130,15 @@ namespace SalaryStatistics
         private Dictionary<string,int> getKeyColumns(ExcelWorksheet worksheet, string[] keyColumnNames, int headerRow)
         {
             Dictionary<string,int> keyColumns = new Dictionary<string,int>();
+            int endColumn = worksheet.Dimension.End.Column;
+            string cellValue;
 
             foreach (string column in keyColumnNames)
             {
-                for (int x = 1; x < worksheet.Dimension.End.Column; x++)
+                for (int x = 1; x < endColumn ; x++)
                 {
-                    if (worksheet.Cells[headerRow, x].Value == column)
+                    cellValue = worksheet.Cells[headerRow, x].GetValue<string>();
+                    if (cellValue == column)
                     {
                         keyColumns[column] = x;
                     }
