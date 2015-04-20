@@ -7,149 +7,239 @@ using System.Data;
 using System.Reflection;
 using System.Windows.Forms;
 using OfficeOpenXml;
+using System.Text.RegularExpressions;
 namespace SalaryStatistics
 {
     public class Data
     {
         private string filePath = "";
-        private FileInfo inputFile;
-        private ExcelPackage excelFile;
 
-        //Uses the filePath set in the objects instantiation to load the file and create an ExcelPackage with it.
         public Data(string path)
         {
             filePath = path;
-            inputFile = new FileInfo(filePath);
-            excelFile = new ExcelPackage(inputFile);
-
-            //TODO: Add error handling if the file can't be opened or it's not an excel file.
-            Console.WriteLine("Data() ending.");
         }
 
-        //Uses the searchForHeader's function to find the header row and delete everything above that
-        //
-        public void prepare()
-       {
-            //Get the first worksheet in the workbook
-                ExcelWorksheet sourceData = excelFile.Workbook.Worksheets[1];
-            //Create a new worksheet
-                ExcelWorksheet preparedData = excelFile.Workbook.Worksheets["Prepared Data"];
-            //Tracks the number of rows from sourceData that are ignored
-                int ignoredRows = 0;
-            //Gets the index of the header row in sourceData, everything above this is ignored
-                int headerRow = 7; //getHeaderRow("Job Title");
-            //The names of the columns we want in Prepared Data
-                string[] keyColumnNames = {"Job Title"};
-            //The indexes of where the desired columns are in sourceData
-                Dictionary<string, int> keyColumns = getKeyColumns(sourceData, keyColumnNames, headerRow);
-            //Keeps track of which row and column we're inserting to in the preparedData workshet
-                int insertRow = 1;
-                int insertCol = 1;
+        public void load(int column)
+        {
+            FileInfo existingFile = new FileInfo(filePath);
 
-            //Loop through all the rows in sourceData
-            for (int row = headerRow; row < sourceData.Dimension.End.Row; row++)
+            using (ExcelPackage package = new ExcelPackage(existingFile))
             {
-                //Ignore rows without a Job Title value
-                if (sourceData.Cells[row, keyColumns["Job Title"]] != null)
+                // get the first worksheet in the workbook
+                ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
+
+                int deletedRows = 0;
+
+                while (column != worksheet.Dimension.End.Column)
                 {
-                    insertCol = 1; //Reset insertions to the beginning of the row
-                    //Copy each of the keyColumns over to the new new worksheet
-                    foreach (KeyValuePair<string, int> column in keyColumns)
+                    for (int row = 1; row < 51; row++)
                     {
-                        preparedData.Cells[insertRow, insertCol].Value = sourceData.Cells[row, column.Value];
-                        insertCol++; //increment cells in the row
+                        if (worksheet.Cells[row, column].Value == null)
+                        {
+                            worksheet.DeleteRow(row, 1, true);
+                            deletedRows++;
+                            row--;
+                        }
+                        else if (deletedRows > 15)
+                        {
+                            column++;
+                            deletedRows = 0;
+                        }
                     }
-                    insertRow++; //Increment rows
-                } else {
-                    ignoredRows++; //Increment the number of ignored rows, that is those without a Job Title value
-                }
-            }
-            Console.WriteLine("Ignored {0} rows.", ignoredRows);
-            Console.WriteLine("prepare() ending.");
-       } //End of prepare()
+                }//end while
+                for (int row = 1; row < 10; row++)
+                    Console.WriteLine("\tCell({0},{1}).Value={2}", row, column, worksheet.Cells[row, column].Value);
 
-        public void close()
-        {
-            SaveFileDialog dialogue = new SaveFileDialog();
-            using (FileStream newFile = new FileStream(filePath, FileMode.Create))
-            {
-                excelFile.SaveAs(newFile);
-            }
-            Console.WriteLine("close() ending.");
-        }
 
-        //Searches for the row with the specified string in the object's excelFile and returns its integer index.
-        private int getHeaderRow(string header)
-        {
-            int row = 1;
-            int col = 1;
-            int numCols = 1;
-            int numRows = 1;
-            bool foundIt = false;
-            ExcelWorksheet currentWorksheet = excelFile.Workbook.Worksheets[1];
-
-            //count columns in document
-            while (currentWorksheet.Cells[numRows, numCols].Value != null)
-            {
-                numCols++;
-            }
-
-            //search 1st row of columna for header
-            while (foundIt != true)
-            {
-                for (col = 1; col < numCols; col++)
+                //Add the found headers as new worksheets
+                //Check to see if worksheet exists already
+                var sheet = package.Workbook.Worksheets[worksheet.Cells[1, column].Value.ToString()];
+                if (sheet == null)
                 {
-                    if (currentWorksheet.Cells[row, col].Value.Equals(header))
+                    var ws = worksheet.Workbook.Worksheets.Add(worksheet.Cells[1, column].Value.ToString());
+                    SaveFileDialog sfd = new SaveFileDialog();
+                    using (FileStream fs = new FileStream(filePath, FileMode.Create))
                     {
-                        foundIt = true;
-                        Console.WriteLine("\tFound the header identification string '" + header + "' in column " + col);
-                        return col;
-                    }//end if
-                }//end col for
-            }//end while
-
-            Console.WriteLine("getHeaderRow() returning.");
-            return col;
-        }
-
-
-        //UNUSED
-        private void populateWorksheet(string title)
-        {
-            ExcelWorksheet newWorksheet = excelFile.Workbook.Worksheets[title];
-        }
-
-        //Searches through the given headerRow for the strings in keyColumnNames in the worksheet
-        // and returns a Dictionary with the names and column indexes.
-        private Dictionary<string,int> getKeyColumns(ExcelWorksheet worksheet, string[] keyColumnNames, int headerRow)
-        {
-            Dictionary<string,int> keyColumns = new Dictionary<string,int>();
-
-            foreach (string column in keyColumnNames)
-            {
-                for (int x = 1; x < worksheet.Dimension.End.Column; x++)
-                {
-                    if (worksheet.Cells[headerRow, x].Value == column)
-                    {
-                        keyColumns[column] = x;
+                        package.SaveAs(fs);
                     }
                 }
-            }
-            Console.WriteLine("getKeyColumns() returning.");
-            return keyColumns;
+                Console.WriteLine("\tDeleted Rows: {0}", deletedRows);
+            } // the using statement automatically calls Dispose() which closes the package.
         }
 
-        //UNUSED: Sets the first row of the provided worksheet to the keys of the provided Dictionary and sets the row to bold
-        private void setHeaderRows(ref ExcelWorksheet worksheet, Dictionary<string,int> keyColumns)
+        public int searchForHeader(string s)
         {
-            int currentColumn = 1;
-            foreach (KeyValuePair<string, int> column in keyColumns)
+            FileInfo existingFile = new FileInfo(filePath);
+            bool f = false;
+
+            using (ExcelPackage p = new ExcelPackage(existingFile))
             {
-                worksheet.Cells[1, currentColumn].Value = column.Key;
-                currentColumn++;
+                ExcelWorksheet ws = p.Workbook.Worksheets[1]; //first worksheet
+                int row = 1, col = 1;
+                int numCols = ws.Dimension.End.Column;
+                int numRows = ws.Dimension.End.Row;
+                //search 1st row of columna for header
+                while (f != true)
+                {
+                    try
+                    {
+                        for (col = 1; col < numCols; col++)
+                        {
+                            for (row = 1; row < numRows; row++)
+                            {
+                                //Console.WriteLine("Currently in column: " + col);
+                                if (ws.Cells[row, col].Value == null)
+                                {
+                                    col++;
+                                }
+                                else if (ws.Cells[row, col].Value.Equals(s))
+                                {
+                                    f = true;
+                                    Console.WriteLine("\tfound in column: " + col);
+                                    return col;
+                                }//end if
+                            }
+                        }//end col for
+                    }
+                    catch(Exception e)
+                    {
+                        Console.WriteLine(e.ToString());
+                        continue;
+                    }
+                }//end while
+                return col;
+            }//end using
+        }//end searchForHeader
+        public void prepareData(string title1, string title2)
+        {
+            FileInfo existingPath = new FileInfo(filePath);
+            using (ExcelPackage p = new ExcelPackage(existingPath))
+            {
+                ExcelWorksheet ws1 = p.Workbook.Worksheets[title1];
+                ExcelWorksheet ws2 = p.Workbook.Worksheets[title2];
+                ws1.Cells["B1:B1558"].Copy(ws2.Cells["A1:A1558"]);
+                ws1.Cells["K1:K1558"].Copy(ws2.Cells["B1:B1558"]);
+                ws1.Cells["AA1:AA1558"].Copy(ws2.Cells["C1:CC1558"]);
+
+                using (FileStream fs = new FileStream(filePath, FileMode.Create))
+                {
+                    p.SaveAs(fs);
+                }
             }
-            worksheet.Row(1).Style.Font.Bold = true;
-            Console.WriteLine("setHeaderRows ending.");
         }
+
+        public void sortPreparedData()
+        {
+            FileInfo existingPath = new FileInfo(filePath);
+            using (ExcelPackage p = new ExcelPackage(existingPath))
+            {
+                ExcelWorksheet ws = p.Workbook.Worksheets["Prepared Data"];
+                ExcelWorksheet ws2 = null;
+                string temp = "", temp2="";
+                int endCol = ws.Dimension.End.Column;
+                int endRow = ws.Dimension.End.Row;
+                for (int i = 2; i < endRow; i++)
+                {
+                    if (ws.Cells["A" + i].Value == null)
+                        i++;
+                    else
+                    {
+                        //Job title
+                        temp = replaceSlash(ws.Cells["A" + i].Value.ToString());
+
+                        if (p.Workbook.Worksheets[replaceSlash(temp)] == null)
+                        {
+                            ws2 = p.Workbook.Worksheets.Add(temp);
+                            Console.WriteLine("\tAdding worksheet: " + temp);
+                            int newCol = ws2.Dimension.End.Row + 1;
+                            ws.Cells["A" + i].Copy(ws2.Cells["A" + newCol]);
+                            ws.Cells["B" + i].Copy(ws2.Cells["B" + newCol]);
+                            ws.Cells["C" + i].Copy(ws2.Cells["C" + newCol]);
+                        }
+                        else
+                        {
+                            ws2 = p.Workbook.Worksheets[temp];
+                            int newCol = ws2.Dimension.End.Row + 1;
+                            ws.Cells["A" + i].Copy(ws2.Cells["A" + newCol]);
+                            ws.Cells["B" + i].Copy(ws2.Cells["B" + newCol]);
+                            ws.Cells["C" + i].Copy(ws2.Cells["C" + newCol]);
+                        }
+                        //Department ID
+                        temp2 = replaceSlash(ws.Cells["C" + i].Value.ToString());
+
+                        if (p.Workbook.Worksheets[replaceSlash(temp)] == null)
+                        {
+                            p.Workbook.Worksheets.Add(temp);
+                            ws2 = p.Workbook.Worksheets.Add(temp);
+                            int newCol = ws2.Dimension.End.Row + 1;
+                            ws.Cells["C" + i].Copy(ws2.Cells["A" + newCol]);
+                            ws.Cells["B" + i].Copy(ws2.Cells["B" + newCol]);
+                            ws.Cells["A" + i].Copy(ws2.Cells["C" + newCol]);
+                            Console.WriteLine("\tAdding worksheet: " + temp);
+                        }
+                        else
+                        {
+                            ws2 = p.Workbook.Worksheets[temp];
+                            int newCol = ws2.Dimension.End.Row + 1;
+                            ws.Cells["C" + i].Copy(ws2.Cells["A" + newCol]);
+                            ws.Cells["B" + i].Copy(ws2.Cells["B" + newCol]);
+                            ws.Cells["A" + i].Copy(ws2.Cells["C" + newCol]);
+                        }
+                    }
+                        //var sheet = p.Workbook.Worksheets[temp];
+
+                        
+                   
+                }
+                    using (FileStream fs = new FileStream(filePath, FileMode.Create))
+                    {
+                        p.SaveAs(fs);
+                    }
+            }
+        }
+
+        public void sortPreparedDeptData()
+        {
+            FileInfo existingPath = new FileInfo(filePath);
+
+            using(ExcelPackage p = new ExcelPackage(existingPath))
+            {
+                ExcelWorksheet ws = p.Workbook.Worksheets["Prepared Data"];
+                ExcelWorksheet ws2 = null;
+                string temp = "";
+                int endCol = ws.Dimension.End.Column;
+                int endRow = ws.Dimension.End.Row;
+
+                for (int i = 2; i < endRow; i++)
+                {
+                    if (ws.Cells["C" + i].Value == null)
+                        i++;
+                    else
+                        temp = replaceSlash(ws.Cells["C" + i].Value.ToString());
+
+                    //var sheet = p.Workbook.Worksheets[temp];
+
+                    if (p.Workbook.Worksheets[replaceSlash(temp)] == null)
+                    {
+                        p.Workbook.Worksheets.Add(temp);
+                        Console.WriteLine("\tAdding worksheet: " + temp);
+                    }
+                    else
+                        ws2 = p.Workbook.Worksheets[temp];
+                }
+                using (FileStream fs = new FileStream(filePath, FileMode.Create))
+                {
+                    p.SaveAs(fs);
+                }
+            }
+        }
+
+        public string replaceSlash(string s)
+        {
+            string pattern = "\\/";
+            Regex regex = new Regex(pattern);
+            return regex.Replace(s, "-");
+        }
+
     }
 }

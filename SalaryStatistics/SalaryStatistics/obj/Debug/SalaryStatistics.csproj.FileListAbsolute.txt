@@ -7,3 +7,12 @@ C:\Users\Kyle Johnston\Documents\uhsalaries\SalaryStatistics\SalaryStatistics\ob
 C:\Users\Kyle Johnston\Documents\uhsalaries\SalaryStatistics\SalaryStatistics\obj\Debug\SalaryStatistics.csproj.GenerateResource.Cache
 C:\Users\Kyle Johnston\Documents\uhsalaries\SalaryStatistics\SalaryStatistics\obj\Debug\SalaryStatistics.exe
 C:\Users\Kyle Johnston\Documents\uhsalaries\SalaryStatistics\SalaryStatistics\obj\Debug\SalaryStatistics.pdb
+C:\Users\josh\Documents\GitHub\Git\UHsalaries\uhsalaries\SalaryStatistics\SalaryStatistics\bin\Debug\SalaryStatistics.exe.config
+C:\Users\josh\Documents\GitHub\Git\UHsalaries\uhsalaries\SalaryStatistics\SalaryStatistics\obj\Debug\SalaryStatistics.exe
+C:\Users\josh\Documents\GitHub\Git\UHsalaries\uhsalaries\SalaryStatistics\SalaryStatistics\obj\Debug\SalaryStatistics.pdb
+C:\Users\josh\Documents\GitHub\Git\UHsalaries\uhsalaries\SalaryStatistics\SalaryStatistics\bin\Debug\SalaryStatistics.exe
+C:\Users\josh\Documents\GitHub\Git\UHsalaries\uhsalaries\SalaryStatistics\SalaryStatistics\bin\Debug\SalaryStatistics.pdb
+C:\Users\josh\Documents\GitHub\Git\UHsalaries\uhsalaries\SalaryStatistics\SalaryStatistics\obj\Debug\SalaryStatistics.csprojResolveAssemblyReference.cache
+C:\Users\josh\Documents\GitHub\Git\UHsalaries\uhsalaries\SalaryStatistics\SalaryStatistics\obj\Debug\SalaryStatistics.Form1.resources
+C:\Users\josh\Documents\GitHub\Git\UHsalaries\uhsalaries\SalaryStatistics\SalaryStatistics\obj\Debug\SalaryStatistics.Properties.Resources.resources
+C:\Users\josh\Documents\GitHub\Git\UHsalaries\uhsalaries\SalaryStatistics\SalaryStatistics\obj\Debug\SalaryStatistics.csproj.GenerateResource.Cache
