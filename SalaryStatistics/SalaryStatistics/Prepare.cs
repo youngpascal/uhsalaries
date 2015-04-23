@@ -1,123 +1,114 @@
 ﻿using OfficeOpenXml;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Windows.Forms;
+
 namespace SalaryStatistics
 {
     public partial class Data
     {
-        private string filePath = "";
-        private ExcelPackage excelFile;
-        private float constantD;
-        private float constantK;
-        private float constantL;
+        public void Prepare(string sourceSheetName, string preparedSheetName, string headerName)
+        {       //Get the source worksheet in the workbook by name
+                ExcelWorksheet sourceWorksheet = excelFile.Workbook.Worksheets[1];
 
-        public Data(string path, float _constantD, float _constantK, float _constantL)
-        {
-            filePath = path;
-            constantD = _constantD;
-            constantK = _constantK;
-            constantL = _constantL;
-            excelFile = new ExcelPackage(new FileInfo(filePath));
-        }
-        
-        /*public void load(int column)
-        {
-            FileInfo existingFile = new FileInfo(filePath);
+                int headerRow = searchForHeaderRow(headerName, sourceWorksheet);
+                Console.WriteLine("Headers on Row: {0}", headerRow);
 
-            using (ExcelPackage package = new ExcelPackage(existingFile))
-            {
-                // get the first worksheet in the workbook
-                ExcelWorksheet worksheet = package.Workbook.Worksheets[1];
-
-                int deletedRows = 0;
-
-                while (column != worksheet.Dimension.End.Column)
-                {
-                    for (int row = 1; row < 51; row++)
+                //Find the integer indexes of of the desired cooluns (Job Title, Proposed Salary, and Department ID)
+                    //Gets the column that the proposed salaries begin at
+                    string[] proposedColumName = {"Proposed"};
+                    Dictionary<string, int> proposedColumn = searchForHeaderColumns(sourceWorksheet, proposedColumName, headerRow-1, 1);
+                    
+                    //Gets the colun number of the proposed salary by using the offeset of the propsed column
+                    string[] proposedSalaryColumnName = {"Total Salary"};
+                    Dictionary<string, int> totalSalary = searchForHeaderColumns(sourceWorksheet, proposedSalaryColumnName, headerRow, proposedColumn["Proposed"]);
+    
+                    //Gets the column numbers of the Job Title and department id columns
+                    string[] headerColumnNames = { "Job Title", "Pos Deptid" };
+                    Dictionary<string, int> headerColumns = searchForHeaderColumns(sourceWorksheet, headerColumnNames, headerRow, 1);
+    
+                    foreach (KeyValuePair<string, int> entry in totalSalary)
                     {
-                        if (worksheet.Cells[row, column].Value == null)
+                        headerColumns.Add(entry.Key, entry.Value);
+                        break; //Skips all entrys in totalSalary after the first, I think -kj
+                    }
+                
+                //Add headers to the pareparedData worksheet then copy the three key columns of all the rows that don't have null job titles to it  
+                    //Check to see if worksheet exists already
+                    var preparedWorksheet = excelFile.Workbook.Worksheets[preparedSheetName];
+                    if (preparedWorksheet == null)
+                    {
+                        preparedWorksheet = excelFile.Workbook.Worksheets.Add(preparedSheetName);
+                    }
+                    
+                    //Copy the key columns (headers and values and empty rows)
+                    int endRow = sourceWorksheet.Dimension.End.Row;
+                    int tracker = 1;
+                        foreach (KeyValuePair<string, int> column in headerColumns)
                         {
-                            worksheet.DeleteRow(row, 1, true);
-                            deletedRows++;
-                            row--;
+                            int col = column.Value;
+                            sourceWorksheet.Cells[headerRow, col, endRow, col].Copy(preparedWorksheet.Cells[1, tracker, endRow, tracker]);
+                            tracker++;
                         }
-                        else if (deletedRows > 15)
+                    
+
+                    //Delete the empty rows in preparedWorksheet
+                        int[] deletedRows = new int[1000];
+                        int i = 0;
+                    foreach (var cell in preparedWorksheet.Cells[2, 1, preparedWorksheet.Dimension.End.Row, headerColumns.Count])
+                    {
+                        if (cell.Value == null || cell.Value == "")
                         {
-                            column++;
-                            deletedRows = 0;
+                            deletedRows[i] = cell.Start.Row;
+                            //preparedWorksheet.DeleteRow(cell.Start.Row, 1, true);
+                            preparedWorksheet.Cells[cell.Start.Row, cell.Start.Column + 1].Value = "<- Row Selected for Deletion";
+                            i++;
                         }
                     }
-                }//end while
-                for (int row = 1; row < 10; row++)
-                    Console.WriteLine("\tCell({0},{1}).Value={2}", row, column, worksheet.Cells[row, column].Value);
 
-
-                //Add the found headers as new worksheets
-                //Check to see if worksheet exists already
-                var sheet = package.Workbook.Worksheets[worksheet.Cells[1, column].Value.ToString()];
-                if (sheet == null)
-                {
-                    var ws = worksheet.Workbook.Worksheets.Add(worksheet.Cells[1, column].Value.ToString());
-                    SaveFileDialog sfd = new SaveFileDialog();
-                    using (FileStream fs = new FileStream(filePath, FileMode.Create))
+                    int offset = 0;
+                    for (int x = 0; x < deletedRows.Length; x++)
                     {
-                        package.SaveAs(fs);
+                        if (deletedRows[x] != 0 && deletedRows[x] != null)
+                        {
+                            preparedWorksheet.DeleteRow(deletedRows[x] - offset, 1, true);
+                            offset++;
+                        }
+                    }
+        }
+
+        private int searchForHeaderRow(string headerName, ExcelWorksheet currentWoksheet)
+        {
+            //Find all cells that match the query in the columsn A thorugh Z
+            var query = (from cell in currentWoksheet.Cells["A:Z"] where cell.Value is string && (string)cell.Value==headerName select cell);
+
+            //Returnt the row of the first cell found.
+            foreach (var cell in query)
+            {
+                return cell.Start.Row;
+            }
+
+            return 0;
+        }
+
+        private Dictionary<string, int> searchForHeaderColumns(ExcelWorksheet currentWorksheet, string[] headers, int headerRow, int columnOffset) {
+            Dictionary<string, int> foundColumns = new Dictionary<string, int> { };
+
+            //Examine each cell in the given row after the given offset
+            foreach (var cell in currentWorksheet.Cells.Offset(0,columnOffset))
+            {   //Compare each cell's value to the desired column values
+                foreach (string header in headers) {
+                    if (cell.Value != null && cell.Value.Equals(header))
+                    {
+                        foundColumns.Add(header, cell.Start.Column);
                     }
                 }
-                Console.WriteLine("\tDeleted Rows: {0}", deletedRows);
-            } // the using statement automatically calls Dispose() which closes the package.
+            }
+
+            return foundColumns;
         }
 
-        public int searchForHeader(string s)
-        {
-            FileInfo existingFile = new FileInfo(filePath);
-            bool f = false;
-
-            using (ExcelPackage p = new ExcelPackage(existingFile))
-            {
-                ExcelWorksheet ws = p.Workbook.Worksheets[1]; //first worksheet
-                int row = 1, col = 1;
-                int numCols = ws.Dimension.End.Column;
-                int numRows = ws.Dimension.End.Row;
-                //search 1st row of columna for header
-                while (f != true)
-                {
-                    try
-                    {
-                        for (col = 1; col < numCols; col++)
-                        {
-                            for (row = 1; row < numRows; row++)
-                            {
-                                //Console.WriteLine("Currently in column: " + col);
-                                if (ws.Cells[row, col].Value == null)
-                                {
-                                    col++;
-                                }
-                                else if (ws.Cells[row, col].Value.Equals(s))
-                                {
-                                    f = true;
-                                    Console.WriteLine("\tfound in column: " + col);
-                                    return col;
-                                }//end if
-                            }
-                        }//end col for
-                    }
-                    catch(Exception e)
-                    {
-                        Console.WriteLine(e.ToString());
-                        continue;
-                    }
-                }//end while
-                return col;
-            }//end using
-        }//end searchForHeader
+        /*
         public void prepareData(string title1, string title2)
         {
             FileInfo existingPath = new FileInfo(filePath);
@@ -128,11 +119,6 @@ namespace SalaryStatistics
                 ws1.Cells["B1:B1558"].Copy(ws2.Cells["A1:A1558"]);
                 ws1.Cells["K1:K1558"].Copy(ws2.Cells["B1:B1558"]);
                 ws1.Cells["AA1:AA1558"].Copy(ws2.Cells["C1:CC1558"]);
-
-                using (FileStream fs = new FileStream(filePath, FileMode.Create))
-                {
-                    p.SaveAs(fs);
-                }
             }
         }
 
@@ -143,7 +129,7 @@ namespace SalaryStatistics
             {
                 ExcelWorksheet ws = p.Workbook.Worksheets["Prepared Data"];
                 ExcelWorksheet ws2 = null;
-                string temp = "", temp2="";
+                string temp = "", temp2 = "";
                 int endCol = ws.Dimension.End.Column;
                 int endRow = ws.Dimension.End.Row;
                 for (int i = 2; i < endRow; i++)
@@ -194,15 +180,11 @@ namespace SalaryStatistics
                             ws.Cells["A" + i].Copy(ws2.Cells["C" + newCol]);
                         }
                     }
-                        //var sheet = p.Workbook.Worksheets[temp];
+                    //var sheet = p.Workbook.Worksheets[temp];
 
-                        
-                   
+
+
                 }
-                    using (FileStream fs = new FileStream("Processed " + filePath, FileMode.Create))
-                    {
-                        p.SaveAs(fs);
-                    }
             }
         }
 
@@ -210,7 +192,7 @@ namespace SalaryStatistics
         {
             FileInfo existingPath = new FileInfo(filePath);
 
-            using(ExcelPackage p = new ExcelPackage(existingPath))
+            using (ExcelPackage p = new ExcelPackage(existingPath))
             {
                 ExcelWorksheet ws = p.Workbook.Worksheets["Prepared Data"];
                 ExcelWorksheet ws2 = null;
@@ -235,10 +217,6 @@ namespace SalaryStatistics
                     else
                         ws2 = p.Workbook.Worksheets[temp];
                 }
-                using (FileStream fs = new FileStream(filePath, FileMode.Create))
-                {
-                    p.SaveAs(fs);
-                }
             }
         }
 
@@ -247,6 +225,7 @@ namespace SalaryStatistics
             string pattern = "\\/";
             Regex regex = new Regex(pattern);
             return regex.Replace(s, "-");
-        }*/
+        }
+        */
     }
 }

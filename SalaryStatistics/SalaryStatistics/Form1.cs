@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
-//Ep Plus API
+//EPPlus API
 using OfficeOpenXml;
 
 namespace SalaryStatistics
@@ -16,13 +16,15 @@ namespace SalaryStatistics
     public partial class Form1 : Form
     {
         private String filePath = "";
-        Data ld;
+        private Data theData;
 
         public Form1()
         {
             InitializeComponent();
+            this.TopMost = true;
         }
 
+        //Prompts a user to select the input file before displaying the settings window with the action button.
         private void Form1_Load(object sender, EventArgs e)
         {
             Stream myStream = null;
@@ -56,19 +58,29 @@ namespace SalaryStatistics
 
         }//end form load
 
+        //Getter for From1's filePath string.
         public String getFilePath()
         {
             return filePath;
         }
 
+        //Triggered by the action button. Takes the constants specified and the filepath to create a Data object.
+        //Then it applys the prepare(), process(), and close() fuctions to the object.
         private void button1_Click(object sender, EventArgs e)
         {
             int constantL = int.Parse(textBox1.Text);
             int constantD = int.Parse(textBox2.Text);
             int constantK = int.Parse(textBox3.Text);
+            string sourceSheetName = "0"; // "FY2013 Detail Faculty Roster";
+            string preparedSheetName = "Prepared Data";
 
-            ld = new Data(filePath);
-           // ld.load(2);
+            theData = new Data(filePath, constantD, constantK, constantL);
+
+            theData.Prepare(sourceSheetName, preparedSheetName, "Job Title");
+            theData.Process();
+            theData.Close();
+
+            //ld.load(2);
             //ld.load(12);
             //ld.load(27);
 
@@ -77,14 +89,12 @@ namespace SalaryStatistics
             //ld.searchForHeader("Pos Deptid");
             //ld.searchForHeader("Total Salary");
 
-            ld.prepareData("FY2013 Detail Faculty Roster", "Prepared Data");
-            Console.WriteLine("Done copying");
-            ld.sortPreparedData();
-            Console.WriteLine("Done sorting and populating");
+            //ld.prepareData("FY2013 Detail Faculty Roster", "Prepared Data");
+            //Console.WriteLine("Done copying");
+            //ld.sortPreparedData();
+            //Console.WriteLine("Done sorting and populating");
             //ld.sortPreparedDeptData();
             //Console.WriteLine("Done sorting departments");
         }
-
-
     }
 }
