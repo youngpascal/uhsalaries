@@ -17,6 +17,7 @@ namespace SalaryStatistics
         private float constantD;
         private float constantK;
         private float constantL;
+        private Dictionary<string, int> headerColumns;
 
         public Data(string path, float _constantD, float _constantK, float _constantL)
         {

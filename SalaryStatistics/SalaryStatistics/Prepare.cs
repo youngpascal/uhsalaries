@@ -10,6 +10,8 @@ namespace SalaryStatistics
         public void Prepare(string sourceSheetName, string preparedSheetName, string headerName)
         {       //Get the source worksheet in the workbook by name
                 ExcelWorksheet sourceWorksheet = excelFile.Workbook.Worksheets[1];
+                Dictionary<string, int> totalSalary;
+                Dictionary<string, int> proposedColumn;
 
                 int headerRow = searchForHeaderRow(headerName, sourceWorksheet);
                 Console.WriteLine("Headers on Row: {0}", headerRow);
@@ -17,15 +19,15 @@ namespace SalaryStatistics
                 //Find the integer indexes of of the desired cooluns (Job Title, Proposed Salary, and Department ID)
                   //Gets the column that the proposed salaries begin at
                     string[] proposedColumName = {"Proposed"};
-                    Dictionary<string, int> proposedColumn = searchForHeaderColumns(sourceWorksheet, proposedColumName, headerRow-1, 1);
+                    proposedColumn = searchForHeaderColumns(sourceWorksheet, proposedColumName, headerRow-1, 1);
                     
                   //Gets the colun number of the proposed salary by using the offeset of the propsed column
                     string[] proposedSalaryColumnName = {"Total Salary"};
-                    Dictionary<string, int> totalSalary = searchForHeaderColumns(sourceWorksheet, proposedSalaryColumnName, headerRow, proposedColumn["Proposed"]);
+                    totalSalary = searchForHeaderColumns(sourceWorksheet, proposedSalaryColumnName, headerRow, proposedColumn["Proposed"]);
     
                   //Gets the column numbers of the Job Title and department id columns
                     string[] headerColumnNames = { "Job Title", "Pos Deptid" };
-                    Dictionary<string, int> headerColumns = searchForHeaderColumns(sourceWorksheet, headerColumnNames, headerRow, 1);
+                    headerColumns = searchForHeaderColumns(sourceWorksheet, headerColumnNames, headerRow, 1);
     
                     foreach (KeyValuePair<string, int> entry in totalSalary)
                     {
