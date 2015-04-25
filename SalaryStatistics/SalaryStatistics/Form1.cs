@@ -17,7 +17,7 @@ namespace SalaryStatistics
     {
         private String filePath = "";
         private Data theData;
-
+        Form1 myForm;
         public Form1()
         {
             InitializeComponent();
@@ -68,6 +68,8 @@ namespace SalaryStatistics
         //Then it applys the prepare(), process(), and close() fuctions to the object.
         private void button1_Click(object sender, EventArgs e)
         {
+            Cursor.Current = Cursors.WaitCursor;
+
             int constantL = int.Parse(textBox1.Text);
             int constantD = int.Parse(textBox2.Text);
             int constantK = int.Parse(textBox3.Text);
@@ -80,21 +82,9 @@ namespace SalaryStatistics
             theData.Process();
             theData.Close();
 
-            //ld.load(2);
-            //ld.load(12);
-            //ld.load(27);
+            Cursor.Current = Cursors.Default;
 
-            //ld.load(2);
-            //ld.searchForHeader("Job Title");
-            //ld.searchForHeader("Pos Deptid");
-            //ld.searchForHeader("Total Salary");
 
-            //ld.prepareData("FY2013 Detail Faculty Roster", "Prepared Data");
-            //Console.WriteLine("Done copying");
-            //ld.sortPreparedData();
-            //Console.WriteLine("Done sorting and populating");
-            //ld.sortPreparedDeptData();
-            //Console.WriteLine("Done sorting departments");
         }
     }
 }

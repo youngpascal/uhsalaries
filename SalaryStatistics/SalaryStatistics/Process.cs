@@ -12,10 +12,15 @@ namespace SalaryStatistics
             ExcelWorksheet preparedWorksheet = excelFile.Workbook.Worksheets["Prepared Data"];
             string[] keyHeaders = {"Job Title", "Pos Deptid"};
             Dictionary<string, int> keyColumns = searchForHeaderColumns(preparedWorksheet, keyHeaders, 1, 0);
-            createAndPopulateWorksheets(keyColumns, preparedWorksheet);
+            createWorksheets(keyColumns, preparedWorksheet);
+
+            addConstantSheet();
+            addStatistics();
         }
 
-        private void createAndPopulateWorksheets(Dictionary<string, int> columns, ExcelWorksheet sourceWorksheet)
+    //Supporting Functions
+
+        private void createWorksheets(Dictionary<string, int> columns, ExcelWorksheet sourceWorksheet)
         {
             ExcelWorksheet destinationWorksheet = null;
             Dictionary<string, int> worksheetInsertionPoints = new Dictionary<string,int>();
@@ -36,13 +41,9 @@ namespace SalaryStatistics
                     {   //Create the worksheet
                         destinationWorksheet = excelFile.Workbook.Worksheets.Add(cellValueSheetName);
                         worksheetInsertionPoints.Add(cellValueSheetName, 2);
+                        processedWorksheetNames.Add(cellValueSheetName);
                         worksheetsAdded++;
                         Console.WriteLine("\tAdding worksheet: " + cellValueSheetName);
-                        //Add headers to the worksheet
-                        foreach (KeyValuePair<string, int> header in headerColumns)
-                        {
-                            destinationWorksheet.Cells[1, header.Value].Value = header.Key;
-                        }
                     }
                 }
             }
@@ -92,6 +93,7 @@ namespace SalaryStatistics
                 {
                     ExcelWorksheet currentWorksheet = excelFile.Workbook.Worksheets[worksheetName.Key];
                     currentWorksheet.Cells[1, tracker].Value = header.Key;
+                    currentWorksheet.Cells["A:Z"].AutoFitColumns();
                 }
                 tracker++;
             }

@@ -75,6 +75,7 @@ namespace SalaryStatistics
                             offset++;
                         }
                     }
+            preparedWorksheet.Cells["A:Z"].AutoFitColumns();
         }
 
         private int searchForHeaderRow(string headerName, ExcelWorksheet currentWoksheet)

@@ -17,15 +17,20 @@ namespace SalaryStatistics
         private float constantD;
         private float constantK;
         private float constantL;
+        private float averageNewAssociateProfessorSalary = 50000;
+        private float averageNewFullProfessorSalary = 100000;
         private Dictionary<string, int> headerColumns;
+        private List<string> processedWorksheetNames = new List<string>();
 
-        public Data(string path, float _constantD, float _constantK, float _constantL)
+        public Data(string path, float _constantD, float _constantK, float _constantL)//, float aNAPS, float aNFPS)
         {
             filePath = path;
             constantD = _constantD;
             constantK = _constantK;
             constantL = _constantL;
             excelFile = new ExcelPackage(new FileInfo(filePath));
+            //averageNewAssociateProfessorSalary = aNAPS;
+            //averageNewFullProfessorSalary = aNFPS;
         }
     }
 }
