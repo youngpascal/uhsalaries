@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using System.Linq;
 namespace SalaryStatistics
 {
     public partial class Data
@@ -43,13 +44,11 @@ namespace SalaryStatistics
                             destinationWorksheet.Cells[1, header.Value].Value = header.Key;
                         }
                     }
-
-                    //Add the row to the correct worksheet at the corret line
-                    insertionPoint = worksheetInsertionPoints[cellValueSheetName];
-                    sourceWorksheet.Cells[row, 1, row, headerColumns.Count].Copy(destinationWorksheet.Cells[insertionPoint, 1, insertionPoint, headerColumns.Count]);
-                    worksheetInsertionPoints[cellValueSheetName]++;
                 }
             }
+
+            
+            populateWorksheets(worksheetInsertionPoints, sourceWorksheet);
             Console.WriteLine("Added {0} worksheets", worksheetsAdded);
         }
 
@@ -59,5 +58,43 @@ namespace SalaryStatistics
             Regex regex = new Regex(pattern);
             return regex.Replace(s, "-");
         }
+
+        public void populateWorksheets(Dictionary<string, int> worksheet, ExcelWorksheet sourceWorksheet)
+        {
+            foreach (KeyValuePair<string,int> worksheetName in worksheet)
+            {
+                ExcelWorksheet currentWorksheet = excelFile.Workbook.Worksheets[worksheetName.Key];
+
+                //Search sourceworksheet for all cells containing the key
+                var query = (from cell in sourceWorksheet.Cells["A:C"] where cell.Value is string && (string)cell.Value == worksheetName.Key select cell);
+
+                int startKey = worksheet[worksheetName.Key];
+                //Returns the row of the first cell found.
+                foreach (var cell in query)
+                {
+                    int rowToCopy = cell.Start.Row;
+
+                    //Copy each row in each column
+                    for (int i = 1; i <= headerColumns.Count; i++)
+                    {
+                        sourceWorksheet.Cells[rowToCopy, i].Copy(currentWorksheet.Cells[startKey, i]);
+                    }
+
+                    startKey++;
+                }
+            }
+
+            //Go back through and add the headers to every worksheet
+            int tracker = 1; //track the column
+            foreach (KeyValuePair<string, int> header in headerColumns)
+            {
+                foreach (KeyValuePair<string, int> worksheetName in worksheet)
+                {
+                    ExcelWorksheet currentWorksheet = excelFile.Workbook.Worksheets[worksheetName.Key];
+                    currentWorksheet.Cells[1, tracker].Value = header.Key;
+                }
+                tracker++;
+            }
+        }       
     }
 }
