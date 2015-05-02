@@ -35,6 +35,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.button1 = new System.Windows.Forms.Button();
+            this.checkedFilters = new System.Windows.Forms.CheckedListBox();
+            this.checkedDepartmentFilters = new System.Windows.Forms.CheckedListBox();
             this.SuspendLayout();
             // 
             // textBox1
@@ -90,7 +92,7 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(15, 77);
+            this.button1.Location = new System.Drawing.Point(269, 313);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(137, 23);
             this.button1.TabIndex = 10;
@@ -98,11 +100,33 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
+            // checkedFilters
+            // 
+            this.checkedFilters.CheckOnClick = true;
+            this.checkedFilters.FormattingEnabled = true;
+            this.checkedFilters.Location = new System.Drawing.Point(176, 3);
+            this.checkedFilters.Name = "checkedFilters";
+            this.checkedFilters.Size = new System.Drawing.Size(230, 304);
+            this.checkedFilters.Sorted = true;
+            this.checkedFilters.TabIndex = 13;
+            // 
+            // checkedDepartmentFilters
+            // 
+            this.checkedDepartmentFilters.CheckOnClick = true;
+            this.checkedDepartmentFilters.FormattingEnabled = true;
+            this.checkedDepartmentFilters.Location = new System.Drawing.Point(412, 3);
+            this.checkedDepartmentFilters.Name = "checkedDepartmentFilters";
+            this.checkedDepartmentFilters.Size = new System.Drawing.Size(125, 304);
+            this.checkedDepartmentFilters.Sorted = true;
+            this.checkedDepartmentFilters.TabIndex = 14;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(167, 112);
+            this.ClientSize = new System.Drawing.Size(548, 346);
+            this.Controls.Add(this.checkedDepartmentFilters);
+            this.Controls.Add(this.checkedFilters);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
@@ -127,6 +151,8 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.CheckedListBox checkedFilters;
+        private System.Windows.Forms.CheckedListBox checkedDepartmentFilters;
 
     }
 }

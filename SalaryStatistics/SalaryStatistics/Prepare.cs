@@ -16,7 +16,7 @@ namespace SalaryStatistics
                 int headerRow = searchForHeaderRow(headerName, sourceWorksheet);
                 Console.WriteLine("Headers on Row: {0}", headerRow);
 
-                //Find the integer indexes of of the desired cooluns (Job Title, Proposed Salary, and Department ID)
+                  //Find the integer indexes of of the desired cooluns (Job Title, Proposed Salary, and Department ID)
                   //Gets the column that the proposed salaries begin at
                     string[] proposedColumName = {"Proposed"};
                     proposedColumn = searchForHeaderColumns(sourceWorksheet, proposedColumName, headerRow-1, 1);
@@ -78,7 +78,7 @@ namespace SalaryStatistics
             preparedWorksheet.Cells["A:Z"].AutoFitColumns();
         }
 
-        private int searchForHeaderRow(string headerName, ExcelWorksheet currentWoksheet)
+        public int searchForHeaderRow(string headerName, ExcelWorksheet currentWoksheet)
         {
             //Find all cells that match the query in the columsn A thorugh Z
             var query = (from cell in currentWoksheet.Cells["A:Z"] where cell.Value is string && (string)cell.Value==headerName select cell);
@@ -101,12 +101,52 @@ namespace SalaryStatistics
                 foreach (string header in headers) {
                     if (cell.Value != null && cell.Value.Equals(header))
                     {
-                        foundColumns.Add(header, cell.Start.Column);
+                        if (!foundColumns.ContainsKey(header))
+                              foundColumns.Add(header, cell.Start.Column);
                     }
                 }
             }
 
             return foundColumns;
+        }
+
+        public void fetchFilters(Dictionary<string, int> columns, ExcelWorksheet sourceWorksheet)
+        {
+            Dictionary<string, int> worksheetInsertionPoints = new Dictionary<string, int>();
+            string cellValueSheetName = "";
+            int endRow = sourceWorksheet.Dimension.End.Row;
+
+            //Loop through all rows in a column
+            for (int row = 2; row <= endRow; row++)
+            {
+                foreach (KeyValuePair<string, int> column in columns)
+                {	//Get the value of the cells in the row and replace any '/' with '-'
+                    cellValueSheetName = replaceSlash(sourceWorksheet.Cells[row, column.Value].Value.ToString());
+                    char[] checkForFilterType = cellValueSheetName.ToArray();
+
+                    if (checkForFilterType[0].Equals('H'))
+                    {
+                        if (!listOfDepartmentFilters.Contains(cellValueSheetName))
+                        {
+                            listOfDepartmentFilters.Add(cellValueSheetName);
+                        }
+                    }
+                    else if (!listOfJobFilters.Contains(cellValueSheetName))
+                    {
+                        listOfJobFilters.Add(cellValueSheetName);
+                    }
+                }
+            }
+        }
+
+        public List<string> getJobFiltersList()
+            {
+                return listOfJobFilters;
+            }
+
+        public List<string> getDepartmentFiltersList()
+        {
+            return listOfDepartmentFilters;
         }
     }
 }

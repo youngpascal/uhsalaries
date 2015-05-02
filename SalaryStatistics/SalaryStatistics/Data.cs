@@ -20,8 +20,13 @@ namespace SalaryStatistics
         private float averageNewAssociateProfessorSalary = 50000;
         private float averageNewFullProfessorSalary = 100000;
         private Dictionary<string, int> headerColumns;
+        private List<string> filters;
         private List<string> processedWorksheetNames = new List<string>();
-
+        private List<string> listOfJobFilters = new List<string>();
+        private List<string> listOfDepartmentFilters = new List<string>();
+        private bool fitlered = false;
+        private int jobFilterCount = 0;
+        private int departmentFilterCount = 0;
         public Data(string path, float _constantD, float _constantK, float _constantL)//, float aNAPS, float aNFPS)
         {
             filePath = path;
@@ -31,6 +36,21 @@ namespace SalaryStatistics
             excelFile = new ExcelPackage(new FileInfo(filePath));
             //averageNewAssociateProfessorSalary = aNAPS;
             //averageNewFullProfessorSalary = aNFPS;
+        }
+
+        public ExcelPackage getExcelFile()
+        {
+            return excelFile;
+        }
+
+        public void setJobFilterCount(int count)
+        {
+            jobFilterCount = count;
+        }
+
+        public void setDepartmentFilterCount(int count)
+        {
+            departmentFilterCount = count;
         }
     }
 }
