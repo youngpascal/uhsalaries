@@ -14,7 +14,7 @@ namespace SalaryStatistics
                 Dictionary<string, int> proposedColumn;
 
                 int headerRow = searchForHeaderRow(headerName, sourceWorksheet);
-                Console.WriteLine("Headers on Row: {0}", headerRow);
+                file.WriteLine("Headers on Row: {0}", headerRow);
 
                   //Find the integer indexes of of the desired cooluns (Job Title, Proposed Salary, and Department ID)
                   //Gets the column that the proposed salaries begin at
@@ -108,6 +108,51 @@ namespace SalaryStatistics
             }
 
             return foundColumns;
+        }
+
+        public void copyInputOne()
+        {
+            ExcelWorksheet inputOneWorksheet = inputOnePackage.Workbook.Worksheets[1];
+            ExcelWorksheet destinationWorksheet = excelFile.Workbook.Worksheets.Add("Average New Asst Prof Salary");
+
+            int endRow = inputOneWorksheet.Dimension.End.Row;
+            int endCol = inputOneWorksheet.Dimension.End.Column;
+
+            for (int i = 1; i <= endRow; i++)
+            {
+                inputOneWorksheet.Cells[i, 1, i, endCol].Copy(destinationWorksheet.Cells[i, 1, i, endCol]);
+            }
+            
+        }
+
+        public void copyInputTwo()
+        {
+            ExcelWorksheet inputTwoWorksheet = inputTwoPackage.Workbook.Worksheets[1];
+            ExcelWorksheet destinationWorksheet = excelFile.Workbook.Worksheets.Add("Tier 1 Data");
+
+            int endRow = inputTwoWorksheet.Dimension.End.Row;
+            int endCol = inputTwoWorksheet.Dimension.End.Column;
+
+            for (int i = 1; i <= endRow; i++)
+            {
+                inputTwoWorksheet.Cells[i, 1, i, endCol].Copy(destinationWorksheet.Cells[i, 1, i, endCol]);
+            }
+            
+        }
+
+        public void copyInputThree()
+        {
+            ExcelWorksheet inputThreeWorksheet = inputThreePackage.Workbook.Worksheets[1];
+            ExcelWorksheet destinationWorksheet = excelFile.Workbook.Worksheets.Add("UH Specialty Averages");
+
+            int endRow = inputThreeWorksheet.Dimension.End.Row;
+            int endCol = inputThreeWorksheet.Dimension.End.Column;
+
+            for (int i = 1; i <= endRow; i++)
+            {
+                inputThreeWorksheet.Cells[i, 1, i, endCol].Copy(destinationWorksheet.Cells[i, 1, i, endCol]);
+            }
+            
         }
 
         public void fetchFilters(Dictionary<string, int> columns, ExcelWorksheet sourceWorksheet)

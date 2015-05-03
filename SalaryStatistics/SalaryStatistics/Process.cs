@@ -52,7 +52,7 @@ namespace SalaryStatistics
                             worksheetInsertionPoints.Add(cellValueSheetName, 2);
                             processedWorksheetNames.Add(cellValueSheetName);
                             worksheetsAdded++;
-                            Console.WriteLine("\tAdding worksheet: " + cellValueSheetName);
+                            file.WriteLine("\tAdding worksheet: " + cellValueSheetName);
                         }
                     }
                 }//end column foreach             
@@ -75,7 +75,7 @@ namespace SalaryStatistics
                              worksheetInsertionPoints.Add(cellValueSheetName, 2);
                              processedWorksheetNames.Add(cellValueSheetName);
                              worksheetsAdded++;
-                             Console.WriteLine("\tAdding worksheet: " + cellValueSheetName);
+                             file.WriteLine("\tAdding worksheet: " + cellValueSheetName);
                          }
                  }//end column foreach
              }
@@ -83,7 +83,7 @@ namespace SalaryStatistics
 
             
             populateWorksheets(worksheetInsertionPoints, sourceWorksheet, isFiltered, filters);
-            Console.WriteLine("Added {0} worksheets", worksheetsAdded);
+            file.WriteLine("Added {0} worksheets", worksheetsAdded);
         }
 
         private string replaceSlash(string s)
@@ -93,9 +93,12 @@ namespace SalaryStatistics
             return regex.Replace(s, "-");
         }
 
+        //**********************Populate the worksheets with their respected data***************************************************//
         public void populateWorksheets(Dictionary<string, int> worksheet, ExcelWorksheet sourceWorksheet, bool isFiltered, string[] filters)
         {
             ExcelWorksheet currentWorksheet;
+
+            //***********Copy all rows based on the name of the current worksheet, find the data in 'Prepared Data'**********************//
             foreach (KeyValuePair<string,int> worksheetName in worksheet)
             {
                 currentWorksheet = excelFile.Workbook.Worksheets[worksheetName.Key];
@@ -119,7 +122,7 @@ namespace SalaryStatistics
                     startKey++;
                 }
             }
-
+            //*************************************End row copy********************************************************//
 
             string filterSheetName = "";
             int filterSize = 0;
@@ -131,8 +134,9 @@ namespace SalaryStatistics
             else
                 filterSize = departmentFilterCount;
 
-            string[] applicableFilters = new string[filterSize];
+            string[] applicableFilters = new string[filterSize+1];
 
+            //******************Handle filter cases****************************//
             if (isFiltered)
             {
                 //If it is filtered by job title
@@ -145,7 +149,7 @@ namespace SalaryStatistics
                         char[] checkForDepartmentFitler = filter.ToCharArray();
 
 
-                        if (checkForDepartmentFitler[0] == 'H')
+                        if (checkForDepartmentFitler[0] == 'H' || checkForDepartmentFitler[0] == 'h')
                         {
                             filterSheetName = filter;
                         }
@@ -156,6 +160,7 @@ namespace SalaryStatistics
 
                         x++;
                     }
+                  
 
                     //Go to that worksheet
                     currentWorksheet = excelFile.Workbook.Worksheets[filterSheetName];
@@ -175,9 +180,51 @@ namespace SalaryStatistics
                         }
                     }
                 }
-            }
+                else if (departmentFilterCount > 1)
+                {
+                    int x = 0;
+                    //Find the department that is being filtered
+                    foreach (string filter in filters)
+                    {
+                        char[] checkForDepartmentFitler = filter.ToCharArray();
 
-            //Go back through and add the headers to every worksheet
+
+                        if (checkForDepartmentFitler[0] == 'H' || checkForDepartmentFitler[0] == 'h')
+                        {
+                            applicableFilters[x] = filter;
+                        }
+                        else
+                        {
+                            filterSheetName = filter;
+                        }
+
+                        x++;
+                    }
+
+
+                    //Go to that worksheet
+                    currentWorksheet = excelFile.Workbook.Worksheets[filterSheetName];
+                    file.WriteLine("Operating from worksheet {0}", filterSheetName);
+
+                    //department is second column
+                    int col = 2;
+                    int rowTracker = 1;
+
+                    foreach (string filter in applicableFilters)
+                    {
+                        for (int i = 1; i < currentWorksheet.Dimension.End.Row; i++)
+                        {
+                            if (currentWorksheet.Cells[i, col].Value == filter)
+                            {
+                                currentWorksheet.Cells[i, col-1, i, currentWorksheet.Dimension.End.Column].Copy(filteredSheet.Cells[rowTracker, col-1, rowTracker, currentWorksheet.Dimension.End.Column]);
+                                rowTracker++;
+                            }
+                        }
+                    }
+                }
+            }//***************************End filter case*******************************//
+
+            //*******Go back through and add the headers to every worksheet***//
             int tracker = 1; //track the column
             foreach (KeyValuePair<string, int> header in headerColumns)
             {
@@ -189,8 +236,11 @@ namespace SalaryStatistics
                 }
                 tracker++;
             }
+            //*******************End adding headers******************//
         }       
+        //*********************End populate worksheets******************************************************************************//
 
+        //******************Fetch key columns**************//
         public Dictionary<string, int> getKeyColumns()
         {
             ExcelWorksheet preparedWorksheet = excelFile.Workbook.Worksheets["Prepared Data"];
@@ -198,7 +248,9 @@ namespace SalaryStatistics
             keyColumns = searchForHeaderColumns(preparedWorksheet, keyHeaders, 1, 0);
             return keyColumns;
         }
+        //*****************End fetch key columns**********//
 
+        //*************Get key columns based on selected filters****************//
         private Dictionary<string, int> getFilteredKeyColumns(List<string> filters)
         {
             ExcelWorksheet preparedWorksheet = excelFile.Workbook.Worksheets["Prepared Data"];
@@ -206,5 +258,6 @@ namespace SalaryStatistics
             keyColumns = searchForHeaderColumns(preparedWorksheet, keyHeaders, 1, 0);
             return keyColumns;
         }
+        //*****************End fetch filtered key columns***********************//
     }
 }

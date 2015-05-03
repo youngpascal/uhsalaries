@@ -16,9 +16,13 @@ namespace SalaryStatistics
 {
     public partial class Form1 : Form
     {
-        private String filePath = "";
+        private String fiscalFilePath = "";
+        private String inputOneFilePath = "";
+        private String inputTwoFilePath = "";
+        private String inputThreeFilePath = "";
         private Data theData;        
         Form1 myForm;
+
         public Form1()
         {
             InitializeComponent();
@@ -28,41 +32,25 @@ namespace SalaryStatistics
         //Prompts a user to select the input file before displaying the settings window with the action button.
         private void Form1_Load(object sender, EventArgs e)
         {
-            Stream myStream = null;
-
-            OpenFileDialog of = new OpenFileDialog();
-            of.InitialDirectory = "c:\\";
-            //of.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
-            //of.FilterIndex = 2;
-            of.RestoreDirectory = true;
-
-            if (of.ShowDialog() == DialogResult.OK)
+            //If the log file doesn't exist, create it. requires run as admin
+            if (!File.Exists(@"C:\salaryLog.txt"))
             {
-                try
-                {
-                    if ((myStream = of.OpenFile()) != null)
-                    {
-                        using (myStream)
-                        {
-                            //Store file path in filePath
-                            filePath = of.FileName;
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show("Error: Could not read file from disk. Original error: " + ex.Message);
-                }
+                FileStream fs = new FileStream(@"C:\salaryLog.txt", FileMode.CreateNew);
+                fs.Close();
+            }
 
-                // myStream.Close();
-            }//end if dialogresult=ok
+            fiscalFilePath = selectExcelSheets("Select excel document containing UH fiscal year data.");
+            inputOneFilePath = selectExcelSheets("Select 'input 1' excel document containing Average New Assistant Professor Salaries.");
+            inputTwoFilePath = selectExcelSheets("Select 'input 2' excel document containing Tier 1 data.");
+            inputThreeFilePath = selectExcelSheets("Select 'inout 3' excel document containing UH data per specialty code.");
+
             getFilters();
         }//end form load
 
         //Getter for From1's filePath string.
         public String getFilePath()
         {
-            return filePath;
+            return fiscalFilePath;
         }
 
         //Triggered by the action button. Takes the constants specified and the filepath to create a Data object.
@@ -81,9 +69,12 @@ namespace SalaryStatistics
             string preparedSheetName = "Prepared Data";
             
 
-            theData = new Data(filePath, constantD, constantK, constantL);
-            
+            theData = new Data(fiscalFilePath, inputOneFilePath, inputTwoFilePath, inputThreeFilePath, constantD, constantK, constantL);
+
             theData.Prepare(sourceSheetName, preparedSheetName, "Job Title");
+            theData.copyInputOne();
+            theData.copyInputTwo();
+            theData.copyInputThree();
 
             ExcelWorksheet prepared = theData.getExcelFile().Workbook.Worksheets[preparedSheetName];
 
@@ -144,6 +135,40 @@ namespace SalaryStatistics
             Cursor.Current = Cursors.Default;
             //End process and close
 
+        }
+
+        private string selectExcelSheets(string title)
+        {
+            Stream myStream = null;
+
+            OpenFileDialog of = new OpenFileDialog();
+            of.InitialDirectory = "c:\\";
+            //of.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
+            //of.FilterIndex = 2;
+            of.Title = title;
+            of.RestoreDirectory = true;
+            string filePath = "";
+
+            if (of.ShowDialog() == DialogResult.OK)
+            {
+                try
+                {
+                    if ((myStream = of.OpenFile()) != null)
+                    {
+                        using (myStream)
+                        {
+                            //Store file path in filePath
+                            filePath = of.FileName;
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error: Could not read file from disk. Original error: " + ex.Message);
+                }
+            }//end if dialogresult=ok
+
+            return filePath;
         }
     }
 }

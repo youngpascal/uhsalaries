@@ -10,7 +10,11 @@ namespace SalaryStatistics
             string newFilePath = Path.GetDirectoryName(filePath) + "\\" + "Processed " + Path.GetFileName(filePath);
             excelFile.SaveAs(new FileStream(newFilePath, FileMode.Create));
 
-            MessageBox.Show("File Saved and Closed.");
+            MessageBox.Show("File Saved and Closed to " + newFilePath);
+            file.WriteLine("Operation ran successfully on: " + DateTime.Now);
+
+            file.Close();
+
             Environment.Exit(1);
         }
     }
