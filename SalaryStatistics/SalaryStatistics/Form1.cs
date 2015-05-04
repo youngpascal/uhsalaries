@@ -16,10 +16,10 @@ namespace SalaryStatistics
 {
     public partial class Form1 : Form
     {
-        private String fiscalFilePath = "";
-        private String inputOneFilePath = "";
-        private String inputTwoFilePath = "";
-        private String inputThreeFilePath = "";
+        private String fiscalFilePath = @"C:\Users\josh\Desktop\Salary inputs\Input 0 salary shit.xlsx";
+        private String inputOneFilePath = @"C:\Users\josh\Desktop\Salary inputs\Input 1 new assist prof average salary.xlsx";
+        private String inputTwoFilePath = @"C:\Users\josh\Desktop\Salary inputs\Input 2 Tier 1 data.xlsx";
+        private String inputThreeFilePath = @"C:\Users\josh\Desktop\Salary inputs\Input 3 UH average salary data per specialty.xlsx";
         private Data theData;        
         Form1 myForm;
 
@@ -33,16 +33,16 @@ namespace SalaryStatistics
         private void Form1_Load(object sender, EventArgs e)
         {
             //If the log file doesn't exist, create it. requires run as admin
-            if (!File.Exists(@"C:\salaryLog.txt"))
+            //if (!File.Exists(@"C:\salaryLog.txt"))
             {
-                FileStream fs = new FileStream(@"C:\salaryLog.txt", FileMode.CreateNew);
-                fs.Close();
+                //FileStream fs = new FileStream(@"C:\salaryLog.txt", FileMode.CreateNew);
+               // fs.Close();
             }
 
-            fiscalFilePath = selectExcelSheets("Select excel document containing UH fiscal year data.");
-            inputOneFilePath = selectExcelSheets("Select 'input 1' excel document containing Average New Assistant Professor Salaries.");
-            inputTwoFilePath = selectExcelSheets("Select 'input 2' excel document containing Tier 1 data.");
-            inputThreeFilePath = selectExcelSheets("Select 'inout 3' excel document containing UH data per specialty code.");
+           // fiscalFilePath = selectExcelSheets("Select excel document containing UH fiscal year data.");
+           // inputOneFilePath = selectExcelSheets("Select 'input 1' excel document containing Average New Assistant Professor Salaries.");
+           // inputTwoFilePath = selectExcelSheets("Select 'input 2' excel document containing Tier 1 data.");
+           // inputThreeFilePath = selectExcelSheets("Select 'inout 3' excel document containing UH data per specialty code.");
 
             getFilters();
         }//end form load

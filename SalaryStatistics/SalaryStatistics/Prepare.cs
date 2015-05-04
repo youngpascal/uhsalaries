@@ -14,7 +14,7 @@ namespace SalaryStatistics
                 Dictionary<string, int> proposedColumn;
 
                 int headerRow = searchForHeaderRow(headerName, sourceWorksheet);
-                file.WriteLine("Headers on Row: {0}", headerRow);
+                //file.writeline("Headers on Row: {0}", headerRow);
 
                   //Find the integer indexes of of the desired cooluns (Job Title, Proposed Salary, and Department ID)
                   //Gets the column that the proposed salaries begin at
@@ -76,6 +76,9 @@ namespace SalaryStatistics
                         }
                     }
             preparedWorksheet.Cells["A:Z"].AutoFitColumns();
+
+            //Add the constants sheet
+            addConstantSheet();
         }
 
         public int searchForHeaderRow(string headerName, ExcelWorksheet currentWoksheet)

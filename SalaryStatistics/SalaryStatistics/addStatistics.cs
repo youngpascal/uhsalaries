@@ -12,44 +12,79 @@ namespace SalaryStatistics
         {
             char[] valueString;
             ExcelWorksheet currentWorksheet;
-            List<cell> cells = new List<cell>()
-            {
-                new cell(1, 0, "All"),
-                new cell(2, 0, "Associate Professor"),
-                new cell(3, 0, "Full Professor"),
-
-                new cell(0, 1, "Mean"),
-                new cell(1, 1, "=AVERAGE(C:C)"),
-                new cell(2, 1, "=AVERAGE(C:C)"),
-                new cell(3, 1, "=AVERAGE(C:C)"),
-
-                new cell(0, 2, "Median"),
-                new cell(1, 2, "=MEDIAN(C:C)"),
-                new cell(2, 2, "=MEDIAN(C:C)"),
-                new cell(3, 2, "=MEDIAN(C:C)"),
-
-                new cell(0, 3, "Compression"),
-                new cell(2, 3, "=G6/Constants!E4"),
-                new cell(3, 3, "=G7/Constants!E5")
-            };
+            string[] statisticHeaders = { "1st Quartile", "Mean", "3rd Quartile", "Median", "Compression" };
+            string currentJobTitle;
+            List<string> jobTitles = new List<string>();
+            int bottomOfSortedRows = 2;
+            int numberOfThatJob;
 
             foreach (string worksheetName in processedWorksheetNames)
             {
                 currentWorksheet = excelFile.Workbook.Worksheets[worksheetName];
-                foreach (var currentCell in cells)
+                jobTitles = new List<string>();
+                //Insert two blank Rows
+                currentWorksheet.InsertRow(2, 2);
+                //Insert the statistic column headers
+                for (int r = 0; r < 5; r++)
+                {
+                    currentWorksheet.Cells[1, r + 4].Value = statisticHeaders[r];
+                }
+                bottomOfSortedRows = 4;
+                //Insert the worksheet wide statistics
+                currentWorksheet.Cells[2, 1].Value = "All";
+                currentWorksheet.Cells[2, 4].Formula = "=QUARTILE(C:C,1)";
+                currentWorksheet.Cells[2, 5].Formula = "=AVERAGE(C:C)";
+                currentWorksheet.Cells[2, 6].Formula = "=QUARTILE(C:C,3)";
+                currentWorksheet.Cells[2, 7].Formula = "=MEDIAN(C:C,1)";
+                currentWorksheet.Cells[2, 8].Formula = "[Compression Formula]";
+
+                //If it's not a department worksheet, skip the rest
+                if (worksheetName[0] == 'H')
+                {
+
+                    for (int r = 3; r < currentWorksheet.Dimension.End.Row; r++)
                     {
-                        valueString = currentCell.value.ToCharArray();
-                        if (valueString[0] == '=')
+                        if (!jobTitles.Contains(currentWorksheet.Cells[r, 1].Value) && currentWorksheet.Cells[r, 1].Value != null)
                         {
-                            currentWorksheet.Cells[4 + currentCell.y, headerColumns.Count + 2 + currentCell.x].Formula = currentCell.value;
+                            currentJobTitle = (string)currentWorksheet.Cells[r, 1].Value;
+                            jobTitles.Add(currentJobTitle);
                         }
-                        else
-                        {
-                            currentWorksheet.Cells[4 + currentCell.y, headerColumns.Count + 2 + currentCell.x].Value = currentCell.value;
-                        }
-                        currentWorksheet.Cells[4 + currentCell.y, headerColumns.Count + 2 + currentCell.x].AutoFitColumns();
                     }
+                    jobTitles.Sort();
+
+                    foreach (string jobTitle in jobTitles)
+                    {
+                        //Select all cells with a the given jobTitle
+                        var cellSortingQuery = (from cell in currentWorksheet.Cells["A:A"] where cell.Value is string && cell.Value.Equals(jobTitle) select cell);
+                        var selectedCells = cellSortingQuery.ToArray();
+                        numberOfThatJob = selectedCells.Count();
+
+                        //Insert the header and statistics for that jobTitle section
+                        currentWorksheet.InsertRow(bottomOfSortedRows, 1);
+                        currentWorksheet.Cells[bottomOfSortedRows, 1].Value = jobTitle;
+                        currentWorksheet.Cells[bottomOfSortedRows, 5].Formula = "=QUARTILE(C" + (bottomOfSortedRows + 1) + ":C" + (bottomOfSortedRows + numberOfThatJob) + ",1)";
+                        currentWorksheet.Cells[bottomOfSortedRows, 6].Formula = "=AVERAGE((C" + (bottomOfSortedRows + 1) + ":C" + (bottomOfSortedRows + numberOfThatJob) + ")";
+                        currentWorksheet.Cells[bottomOfSortedRows, 7].Formula = "=QUARTILE(C" + (bottomOfSortedRows + 1) + ":C" + (bottomOfSortedRows + numberOfThatJob) + "3)";
+                        currentWorksheet.Cells[bottomOfSortedRows, 8].Formula = "=MEDIAN(C" + (bottomOfSortedRows + 1) + ":C" + (bottomOfSortedRows + numberOfThatJob) + ")";
+                        currentWorksheet.Cells[bottomOfSortedRows, 9].Formula = "[Compression Formula]";
+
+                        //Copy the row of each cell into the proper location.
+                        foreach (var selectedCell in selectedCells)
+                        {
+                            currentWorksheet.InsertRow(bottomOfSortedRows, 1);
+                            bottomOfSortedRows++;
+                            currentWorksheet.Cells[selectedCell.Start.Row, 1, selectedCell.Start.Row, 3].Copy(currentWorksheet.Cells[bottomOfSortedRows, 1, bottomOfSortedRows, 3]);
+                        }
+
+                        currentWorksheet.InsertRow(bottomOfSortedRows, 1);
+                        bottomOfSortedRows++;
+                    }
+
+                    currentWorksheet.Cells["A:Z"].AutoFitColumns();
+
+                }
             }
+
         }
 
         struct cell

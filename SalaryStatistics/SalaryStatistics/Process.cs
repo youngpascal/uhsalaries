@@ -19,7 +19,7 @@ namespace SalaryStatistics
             List<string> searchFilters = filters;
             createWorksheets(getKeyColumns(), filters, preparedWorksheet, isFiltered);
 
-            addConstantSheet();
+
             addStatistics();
         }
 
@@ -52,7 +52,7 @@ namespace SalaryStatistics
                             worksheetInsertionPoints.Add(cellValueSheetName, 2);
                             processedWorksheetNames.Add(cellValueSheetName);
                             worksheetsAdded++;
-                            file.WriteLine("\tAdding worksheet: " + cellValueSheetName);
+                            //file.writeline("\tAdding worksheet: " + cellValueSheetName);
                         }
                     }
                 }//end column foreach             
@@ -75,7 +75,7 @@ namespace SalaryStatistics
                              worksheetInsertionPoints.Add(cellValueSheetName, 2);
                              processedWorksheetNames.Add(cellValueSheetName);
                              worksheetsAdded++;
-                             file.WriteLine("\tAdding worksheet: " + cellValueSheetName);
+                             //file.writeline("\tAdding worksheet: " + cellValueSheetName);
                          }
                  }//end column foreach
              }
@@ -83,7 +83,7 @@ namespace SalaryStatistics
 
             
             populateWorksheets(worksheetInsertionPoints, sourceWorksheet, isFiltered, filters);
-            file.WriteLine("Added {0} worksheets", worksheetsAdded);
+            //file.writeline("Added {0} worksheets", worksheetsAdded);
         }
 
         private string replaceSlash(string s)
@@ -204,7 +204,7 @@ namespace SalaryStatistics
 
                     //Go to that worksheet
                     currentWorksheet = excelFile.Workbook.Worksheets[filterSheetName];
-                    file.WriteLine("Operating from worksheet {0}", filterSheetName);
+                    //file.writeline("Operating from worksheet {0}", filterSheetName);
 
                     //department is second column
                     int col = 2;

@@ -19,15 +19,7 @@ namespace SalaryStatistics
                 {"A2", "\"d\" Constant"},
                 {"B2", constantD.ToString()},
                 {"A3", "\"k\" Inflation Constant"},
-                {"B3", constantK.ToString()},
-                {"D1", "Average New Associate Professor Salary"},
-                {"E1", averageNewAssociateProfessorSalary.ToString()},
-                {"D2", "Average New Full Professor Salary"},
-                {"E2", averageNewFullProfessorSalary.ToString()},
-                {"D4", "Adjusted Associate Professor Median"},
-                {"E4", "=(E1+10000)*(B2^B3)"},
-                {"D5", "Full Professor Median"},
-                {"E5", "=((E1*B1)+7000)*(B2^B3)"}
+                {"B3", constantK.ToString()}
             };
 
             //Inserts the constants on cells A1 thorugh B3

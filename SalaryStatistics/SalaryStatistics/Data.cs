@@ -13,23 +13,28 @@ namespace SalaryStatistics
     public partial class Data
     {
         private string filePath = "";
+
         private ExcelPackage excelFile;
         private ExcelPackage inputOnePackage;
         private ExcelPackage inputTwoPackage;
         private ExcelPackage inputThreePackage;
+
         private float constantD;
         private float constantK;
         private float constantL;
         private float averageNewAssociateProfessorSalary = 50000;
         private float averageNewFullProfessorSalary = 100000;
+
         private Dictionary<string, int> headerColumns;
         private List<string> filters;
         private List<string> processedWorksheetNames = new List<string>();
         private List<string> listOfJobFilters = new List<string>();
         private List<string> listOfDepartmentFilters = new List<string>();
+
         private bool fitlered = false;
         private int jobFilterCount = 0;
         private int departmentFilterCount = 0;
+
         System.IO.StreamWriter file;
 
         public Data(string path, string inputOnePath, string inputTwoPath, string inputThreePath, float _constantD, float _constantK, float _constantL)//, float aNAPS, float aNFPS)
@@ -42,9 +47,7 @@ namespace SalaryStatistics
             inputOnePackage = new ExcelPackage(new FileInfo(inputOnePath));
             inputTwoPackage = new ExcelPackage(new FileInfo(inputTwoPath));
             inputThreePackage = new ExcelPackage(new FileInfo(inputThreePath));
-            file = new System.IO.StreamWriter(@"C:\salaryLog.txt");
-            //averageNewAssociateProfessorSalary = aNAPS;
-            //averageNewFullProfessorSalary = aNFPS;
+           // file = new System.IO.StreamWriter(@"C:\salaryLog.txt");
         }
 
         public ExcelPackage getExcelFile()
