@@ -63,7 +63,17 @@ namespace SalaryStatistics
                         currentWorksheet.Cells[statInsertionRow, 5].Formula = "AVERAGE(" + currentWorksheet.Cells[r, 3].Address + ":" + currentWorksheet.Cells[r + numberOfRows - 1, 3].Address + ")";
                         currentWorksheet.Cells[statInsertionRow, 6].Formula = "QUARTILE(" + currentWorksheet.Cells[r, 3].Address + ":" + currentWorksheet.Cells[r + numberOfRows - 1, 3].Address + ",3)";
                         currentWorksheet.Cells[statInsertionRow, 7].Formula = "MEDIAN(" + currentWorksheet.Cells[r, 3].Address + ":" + currentWorksheet.Cells[r + numberOfRows - 1, 3].Address + ",1)";
-                        currentWorksheet.Cells[statInsertionRow, 8].Formula = currentWorksheet.Cells[statInsertionRow, 7].Start.Address + "/'Average New Asst Prof Salary'!D2";
+
+                        var query = (from cell in excelFile.Workbook.Worksheets["Average New Asst Prof Salary"].Cells["B:B"] where cell.Value is string && (string)cell.Value == currentWorksheet.Name select cell);
+
+                                                if (query == null)
+                        {
+                            currentWorksheet.Cells[statInsertionRow, 8].Formula = currentWorksheet.Cells[statInsertionRow, 7].Start.Address + "/" + query.First().FullAddress;
+                        }
+                        else
+                        {
+                            currentWorksheet.Cells[statInsertionRow, 8].Value = "Missing Assist. Average";
+                        }
                         statInsertionRow++;
                     }
                     else
@@ -84,8 +94,20 @@ namespace SalaryStatistics
                         currentWorksheet.Cells[statInsertionRow, 5].Formula = "AVERAGE(" + currentWorksheet.Cells[r, 3].Address + ":" + currentWorksheet.Cells[r + numberOfRows - 1, 3].Address + ")";
                         currentWorksheet.Cells[statInsertionRow, 6].Formula = "QUARTILE(" + currentWorksheet.Cells[r, 3].Address + ":" + currentWorksheet.Cells[r + numberOfRows - 1, 3].Address + ",3)";
                         currentWorksheet.Cells[statInsertionRow, 7].Formula = "MEDIAN(" + currentWorksheet.Cells[r, 3].Address + ":" + currentWorksheet.Cells[r + numberOfRows - 1, 3].Address + ",1)";
-                        currentWorksheet.Cells[statInsertionRow, 8].Formula =  currentWorksheet.Cells[statInsertionRow, 7].Start.Address + "/'Average New Asst Prof Salary'!D2";
-                        statInsertionRow++;
+
+                        var query = (from cell in excelFile.Workbook.Worksheets["Average New Asst Prof Salary"].Cells["B:B"]
+                                     where cell.Value is string && String.Equals((string)cell.Value, (string)currentWorksheet.Cells[r, 2].Value, StringComparison.OrdinalIgnoreCase)
+                                     select cell);
+
+                        if (query.GetEnumerator().MoveNext())
+                        {
+                            currentWorksheet.Cells[statInsertionRow, 8].Formula = currentWorksheet.Cells[statInsertionRow, 7].Start.Address + "/" + query.First().FullAddress;
+                        }
+                        else
+                        {
+                            currentWorksheet.Cells[statInsertionRow, 8].Value = "Missing Assist. Average";
+                        }
+                            statInsertionRow++;
                     }
 
                     r = r + numberOfRows + 1; //Increment the row to the next job title 
@@ -102,7 +124,7 @@ namespace SalaryStatistics
                 //Apply Excel formatting
                 currentWorksheet.Row(2).Style.Font.Bold = true;
                 currentWorksheet.Row(2).Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                currentWorksheet.Row(8).Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                currentWorksheet.Column(8).Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                 currentWorksheet.Cells["D:G"].Style.Numberformat.Format = "$###,###,##0";
                 currentWorksheet.Cells["H2:H" + statInsertionRow].Style.Numberformat.Format = "#0.00";
                 currentWorksheet.Cells["A:Z"].AutoFitColumns();
