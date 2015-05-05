@@ -76,6 +76,7 @@ namespace SalaryStatistics
                         }
                     }
             preparedWorksheet.Cells["A:Z"].AutoFitColumns();
+            preparedWorksheet.Cells["C:C"].Style.Numberformat.Format = "$###,###,##0";
 
             //Add the constants sheet
             addConstantSheet();
@@ -86,7 +87,7 @@ namespace SalaryStatistics
             //Find all cells that match the query in the columsn A thorugh Z
             var query = (from cell in currentWoksheet.Cells["A:Z"] where cell.Value is string && (string)cell.Value==headerName select cell);
 
-            //Returnt the row of the first cell found.
+            //Return the row of the first cell found.
             foreach (var cell in query)
             {
                 return cell.Start.Row;
@@ -125,7 +126,20 @@ namespace SalaryStatistics
             {
                 inputOneWorksheet.Cells[i, 1, i, endCol].Copy(destinationWorksheet.Cells[i, 1, i, endCol]);
             }
-            
+
+            destinationWorksheet.InsertColumn(endCol + 1,1);
+            destinationWorksheet.Cells[1, endCol + 1].Value = "Adjusted New Associate Salaries";
+            destinationWorksheet.Cells[1, endCol + 2].Value = "Adjusted Professor Salaries";
+
+            for (int i = 2; i <= endRow; i++)
+            {
+                destinationWorksheet.Cells[i, endCol + 1].Formula = "((A" + i + "*(Constants!B3)^(Constants!B4-C" + i + ")+7000))*(Constants!B2^Constants!B1)";
+                destinationWorksheet.Cells[i, endCol + 2].Formula = "(D" + i + "+10000)*(Constants!B2^Constants!B5)";
+               // destinationWorksheet.Cells[i, endCol + 1].Formula = "A" + i + "*((Constants!B3";
+                destinationWorksheet.Cells[i, endCol + 1, i, endCol + 2].Style.Numberformat.Format = "$###,###,##0";
+            }
+
+            destinationWorksheet.Cells["A:Z"].AutoFitColumns();
         }
 
         public void copyInputTwo()
@@ -140,7 +154,8 @@ namespace SalaryStatistics
             {
                 inputTwoWorksheet.Cells[i, 1, i, endCol].Copy(destinationWorksheet.Cells[i, 1, i, endCol]);
             }
-            
+
+            destinationWorksheet.Cells["A:Z"].AutoFitColumns();
         }
 
         public void copyInputThree()
@@ -155,6 +170,8 @@ namespace SalaryStatistics
             {
                 inputThreeWorksheet.Cells[i, 1, i, endCol].Copy(destinationWorksheet.Cells[i, 1, i, endCol]);
             }
+
+            destinationWorksheet.Cells["A:Z"].AutoFitColumns();
             
         }
 

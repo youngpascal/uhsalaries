@@ -14,12 +14,16 @@ namespace SalaryStatistics
             char[] valueString;
             Dictionary<string, string> cellsToInsert = new Dictionary<string, string>()
             {
-                {"A1", "\"l\" Constant"},
+                {"A1", "Associate \"l\" Constant"},
                 {"B1", constantL.ToString()},
                 {"A2", "\"d\" Constant"},
                 {"B2", constantD.ToString()},
                 {"A3", "\"k\" Inflation Constant"},
-                {"B3", constantK.ToString()}
+                {"B3", constantK.ToString()},
+                {"A4", "Current Year"},
+                {"B4", DateTime.Now.Year.ToString()},
+                {"A5", "Professor \l\" Constant"},
+                {"B5", constantL_professor.ToString()}
             };
 
             //Inserts the constants on cells A1 thorugh B3
@@ -36,6 +40,8 @@ namespace SalaryStatistics
                 }
                 constantSheet.Cells[cell.Key].AutoFitColumns();
             }
+
+            constantSheet.Cells["A:Z"].AutoFitColumns();
         }
     }
 }

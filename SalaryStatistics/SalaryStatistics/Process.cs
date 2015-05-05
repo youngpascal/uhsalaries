@@ -58,6 +58,7 @@ namespace SalaryStatistics
                 }//end column foreach             
             }
             destinationWorksheet = excelFile.Workbook.Worksheets.Add("Filters");
+            processedWorksheetNames.Add("Filters");
             worksheetInsertionPoints.Add("Filters", 2);
             worksheetsAdded++;
         }
@@ -121,6 +122,7 @@ namespace SalaryStatistics
 
                     startKey++;
                 }
+                currentWorksheet.Cells["A:Z"].AutoFitColumns();
             }
             //*************************************End row copy********************************************************//
 
@@ -233,6 +235,7 @@ namespace SalaryStatistics
                     currentWorksheet = excelFile.Workbook.Worksheets[worksheetName.Key];
                     currentWorksheet.Cells[1, tracker].Value = header.Key;
                     currentWorksheet.Cells["A:Z"].AutoFitColumns();
+                    currentWorksheet.Cells["C:C"].Style.Numberformat.Format = "$###,###,##0";
                 }
                 tracker++;
             }
@@ -259,5 +262,17 @@ namespace SalaryStatistics
             return keyColumns;
         }
         //*****************End fetch filtered key columns***********************//
+
+
+        private void sortWorksheet(ExcelWorksheet currentWorksheet)
+        {
+            List<row> rows = new List<row>();
+        }
+        struct row
+        {
+            public string jobTitle;
+            public string departmentID;
+            public string salary;
+        }
     }
 }

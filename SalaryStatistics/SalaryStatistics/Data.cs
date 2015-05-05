@@ -22,6 +22,7 @@ namespace SalaryStatistics
         private float constantD;
         private float constantK;
         private float constantL;
+        private float constantL_professor;
         private float averageNewAssociateProfessorSalary = 50000;
         private float averageNewFullProfessorSalary = 100000;
 
@@ -37,12 +38,13 @@ namespace SalaryStatistics
 
         System.IO.StreamWriter file;
 
-        public Data(string path, string inputOnePath, string inputTwoPath, string inputThreePath, float _constantD, float _constantK, float _constantL)//, float aNAPS, float aNFPS)
+        public Data(string path, string inputOnePath, string inputTwoPath, string inputThreePath, float _constantD, float _constantK, float _constantL, float _constantL_professor)//, float aNAPS, float aNFPS)
         {
             filePath = path;
             constantD = _constantD;
             constantK = _constantK;
             constantL = _constantL;
+            constantL_professor = _constantL_professor;
             excelFile = new ExcelPackage(new FileInfo(filePath));
             inputOnePackage = new ExcelPackage(new FileInfo(inputOnePath));
             inputTwoPackage = new ExcelPackage(new FileInfo(inputTwoPath));

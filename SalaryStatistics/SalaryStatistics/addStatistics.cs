@@ -12,7 +12,7 @@ namespace SalaryStatistics
         {
             char[] valueString;
             ExcelWorksheet currentWorksheet;
-            string[] statisticHeaders = { "1st Quartile", "Mean", "3rd Quartile", "Median", "Compression" };
+            string[] statisticHeaders = { "1st Quartile", "Mean", "3rd Quartile", "Median", "Associate Prof. Compression" };
             string currentJobTitle;
             List<string> jobTitles = new List<string>();
             int bottomOfSortedRows = 2;
@@ -36,52 +36,10 @@ namespace SalaryStatistics
                 currentWorksheet.Cells[2, 5].Formula = "=AVERAGE(C:C)";
                 currentWorksheet.Cells[2, 6].Formula = "=QUARTILE(C:C,3)";
                 currentWorksheet.Cells[2, 7].Formula = "=MEDIAN(C:C,1)";
-                currentWorksheet.Cells[2, 8].Formula = "[Compression Formula]";
+                currentWorksheet.Cells[2, 8].Formula = "=G2/'Average New Asst Prof Salary'!D2";
 
-                //If it's not a department worksheet, skip the rest
-                if (worksheetName[0] == 'H')
-                {
-
-                    for (int r = 3; r < currentWorksheet.Dimension.End.Row; r++)
-                    {
-                        if (!jobTitles.Contains(currentWorksheet.Cells[r, 1].Value) && currentWorksheet.Cells[r, 1].Value != null)
-                        {
-                            currentJobTitle = (string)currentWorksheet.Cells[r, 1].Value;
-                            jobTitles.Add(currentJobTitle);
-                        }
-                    }
-                    jobTitles.Sort();
-
-                    foreach (string jobTitle in jobTitles)
-                    {
-                        //Select all cells with a the given jobTitle
-                        var cellSortingQuery = (from cell in currentWorksheet.Cells["A:A"] where cell.Value is string && cell.Value.Equals(jobTitle) select cell);
-                        var selectedCells = cellSortingQuery.ToArray();
-                        numberOfThatJob = selectedCells.Count();
-
-                        //Insert the header and statistics for that jobTitle section
-                        currentWorksheet.InsertRow(bottomOfSortedRows, 1);
-                        currentWorksheet.Cells[bottomOfSortedRows, 1].Value = jobTitle;
-                        currentWorksheet.Cells[bottomOfSortedRows, 5].Formula = "=QUARTILE(C" + (bottomOfSortedRows + 1) + ":C" + (bottomOfSortedRows + numberOfThatJob) + ",1)";
-                        currentWorksheet.Cells[bottomOfSortedRows, 6].Formula = "=AVERAGE((C" + (bottomOfSortedRows + 1) + ":C" + (bottomOfSortedRows + numberOfThatJob) + ")";
-                        currentWorksheet.Cells[bottomOfSortedRows, 7].Formula = "=QUARTILE(C" + (bottomOfSortedRows + 1) + ":C" + (bottomOfSortedRows + numberOfThatJob) + "3)";
-                        currentWorksheet.Cells[bottomOfSortedRows, 8].Formula = "=MEDIAN(C" + (bottomOfSortedRows + 1) + ":C" + (bottomOfSortedRows + numberOfThatJob) + ")";
-                        currentWorksheet.Cells[bottomOfSortedRows, 9].Formula = "[Compression Formula]";
-
-                        //Copy the row of each cell into the proper location.
-                        foreach (var selectedCell in selectedCells)
-                        {
-                            currentWorksheet.InsertRow(bottomOfSortedRows, 1);
-                            bottomOfSortedRows++;
-                            currentWorksheet.Cells[selectedCell.Start.Row, 1, selectedCell.Start.Row, 3].Copy(currentWorksheet.Cells[bottomOfSortedRows, 1, bottomOfSortedRows, 3]);
-                        }
-
-                        currentWorksheet.InsertRow(bottomOfSortedRows, 1);
-                        bottomOfSortedRows++;
-                    }
-
-                    currentWorksheet.Cells["A:Z"].AutoFitColumns();
-
+                currentWorksheet.Cells["D2:G2"].Style.Numberformat.Format = "$###,###,##0";
+                currentWorksheet.Cells["H2"].Style.Numberformat.Format = "#0.00";
                 }
             }
 
@@ -99,5 +57,4 @@ namespace SalaryStatistics
                 value = _value;
             }
         }
-    }
-}
+ }

@@ -16,10 +16,10 @@ namespace SalaryStatistics
 {
     public partial class Form1 : Form
     {
-        private String fiscalFilePath = @"C:\Users\josh\Desktop\Salary inputs\Input 0 salary shit.xlsx";
-        private String inputOneFilePath = @"C:\Users\josh\Desktop\Salary inputs\Input 1 new assist prof average salary.xlsx";
-        private String inputTwoFilePath = @"C:\Users\josh\Desktop\Salary inputs\Input 2 Tier 1 data.xlsx";
-        private String inputThreeFilePath = @"C:\Users\josh\Desktop\Salary inputs\Input 3 UH average salary data per specialty.xlsx";
+        private String fiscalFilePath = "";
+        private String inputOneFilePath = "";
+        private String inputTwoFilePath = "";
+        private String inputThreeFilePath = "";
         private Data theData;        
         Form1 myForm;
 
@@ -39,10 +39,10 @@ namespace SalaryStatistics
                // fs.Close();
             }
 
-           // fiscalFilePath = selectExcelSheets("Select excel document containing UH fiscal year data.");
-           // inputOneFilePath = selectExcelSheets("Select 'input 1' excel document containing Average New Assistant Professor Salaries.");
-           // inputTwoFilePath = selectExcelSheets("Select 'input 2' excel document containing Tier 1 data.");
-           // inputThreeFilePath = selectExcelSheets("Select 'inout 3' excel document containing UH data per specialty code.");
+            fiscalFilePath = selectExcelSheets("Select excel document containing UH fiscal year data.");
+            inputOneFilePath = selectExcelSheets("Select 'input 1' excel document containing Average New Assistant Professor Salaries.");
+            inputTwoFilePath = selectExcelSheets("Select 'input 2' excel document containing Tier 1 data.");
+            inputThreeFilePath = selectExcelSheets("Select 'inout 3' excel document containing UH data per specialty code.");
 
             getFilters();
         }//end form load
@@ -62,14 +62,15 @@ namespace SalaryStatistics
 
         private void getFilters()
         {
-            int constantL = int.Parse(textBox1.Text);
-            int constantD = int.Parse(textBox2.Text);
-            int constantK = int.Parse(textBox3.Text);
+            float constantL = float.Parse(textBox1.Text);
+            float constantD = float.Parse(textBox3.Text);
+            float constantK = float.Parse(textBox2.Text);
+            float constantL2 = float.Parse(textBox4.Text);
             string sourceSheetName = "0"; // "FY2013 Detail Faculty Roster";
             string preparedSheetName = "Prepared Data";
             
 
-            theData = new Data(fiscalFilePath, inputOneFilePath, inputTwoFilePath, inputThreeFilePath, constantD, constantK, constantL);
+            theData = new Data(fiscalFilePath, inputOneFilePath, inputTwoFilePath, inputThreeFilePath, constantD, constantK, constantL, constantL2);
 
             theData.Prepare(sourceSheetName, preparedSheetName, "Job Title");
             theData.copyInputOne();
@@ -96,9 +97,10 @@ namespace SalaryStatistics
 
         private void doWork()
         {
-            int constantL = int.Parse(textBox1.Text);
-            int constantD = int.Parse(textBox2.Text);
-            int constantK = int.Parse(textBox3.Text);
+            float constantL = float.Parse(textBox1.Text);
+            float constantD = float.Parse(textBox3.Text);
+            float constantK = float.Parse(textBox2.Text);
+            float constantL2 = float.Parse(textBox4.Text);
             bool filtered = false;
             int jobFilterCount = 0;
             int departmentFilterCount = 0;
