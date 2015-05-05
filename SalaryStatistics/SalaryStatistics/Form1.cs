@@ -16,10 +16,10 @@ namespace SalaryStatistics
 {
     public partial class Form1 : Form
     {
-        private String fiscalFilePath = "";
-        private String inputOneFilePath = "";
-        private String inputTwoFilePath = "";
-        private String inputThreeFilePath = "";
+        private String fiscalFilePath = @"E:\UH Detailed Faculty Roster FY2013 anonymous.xlsx";
+        private String inputOneFilePath = @"E:\Input 1 new assist prof average salary.xlsx";
+        private String inputTwoFilePath = @"E:\Input 2 Tier 1 data.xlsx";
+        private String inputThreeFilePath = @"E:\Input 3 UH average salary data per specialty.xlsx";
         private Data theData;        
         Form1 myForm;
 
@@ -39,10 +39,10 @@ namespace SalaryStatistics
                // fs.Close();
             }
 
-            fiscalFilePath = selectExcelSheets("Select excel document containing UH fiscal year data.");
-            inputOneFilePath = selectExcelSheets("Select 'input 1' excel document containing Average New Assistant Professor Salaries.");
-            inputTwoFilePath = selectExcelSheets("Select 'input 2' excel document containing Tier 1 data.");
-            inputThreeFilePath = selectExcelSheets("Select 'inout 3' excel document containing UH data per specialty code.");
+            //fiscalFilePath = selectExcelSheets("Select excel document containing UH fiscal year data.");
+            //inputOneFilePath = selectExcelSheets("Select 'input 1' excel document containing Average New Assistant Professor Salaries.");
+            //inputTwoFilePath = selectExcelSheets("Select 'input 2' excel document containing Tier 1 data.");
+            //inputThreeFilePath = selectExcelSheets("Select 'inout 3' excel document containing UH data per specialty code.");
 
             getFilters();
         }//end form load
