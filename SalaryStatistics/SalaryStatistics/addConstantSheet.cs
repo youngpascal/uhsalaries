@@ -22,7 +22,7 @@ namespace SalaryStatistics
                 {"B3", constantK.ToString()},
                 {"A4", "Current Year"},
                 {"B4", DateTime.Now.Year.ToString()},
-                {"A5", "Professor \l\" Constant"},
+                {"A5", "Professor \"l\" Constant"},
                 {"B5", constantL_professor.ToString()}
             };
 

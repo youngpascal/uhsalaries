@@ -19,7 +19,6 @@ namespace SalaryStatistics
             List<string> searchFilters = filters;
             createWorksheets(getKeyColumns(), filters, preparedWorksheet, isFiltered);
 
-
             addStatistics();
         }
 
@@ -85,6 +84,7 @@ namespace SalaryStatistics
             
             populateWorksheets(worksheetInsertionPoints, sourceWorksheet, isFiltered, filters);
             //file.writeline("Added {0} worksheets", worksheetsAdded);
+
         }
 
         private string replaceSlash(string s)
@@ -236,6 +236,15 @@ namespace SalaryStatistics
                     currentWorksheet.Cells[1, tracker].Value = header.Key;
                     currentWorksheet.Cells["A:Z"].AutoFitColumns();
                     currentWorksheet.Cells["C:C"].Style.Numberformat.Format = "$###,###,##0";
+
+                    if (worksheetName.Key[0] == 'H' || worksheetName.Key[0] == 'h')
+                    {
+                        sortWorksheet(currentWorksheet, "Job Title");
+                    }
+                    else
+                    {
+                        sortWorksheet(currentWorksheet, "Department");
+                    }
                 }
                 tracker++;
             }
@@ -264,15 +273,48 @@ namespace SalaryStatistics
         //*****************End fetch filtered key columns***********************//
 
 
-        private void sortWorksheet(ExcelWorksheet currentWorksheet)
-        {
+        private void sortWorksheet(ExcelWorksheet currentWorksheet, string sortBy)
+        {// This function assumes the first row is headers and dosen't sort it.
             List<row> rows = new List<row>();
+            int endRow = currentWorksheet.Dimension.End.Row;
+
+            //Create the list of rows
+            for (int r = 2; r <= endRow; r++)
+            {
+                rows.Add(new row((string)currentWorksheet.Cells[r, 1].Value, (string)currentWorksheet.Cells[r, 2].Value, (double)currentWorksheet.Cells[r, 3].Value));
+            }
+
+            //Sort the rows in the list
+            if (sortBy == "Job Title")
+            {
+                rows.Sort((s1, s2) => s1.jobTitle.CompareTo(s2.jobTitle));
+            }
+            else if (sortBy == "Department")
+            {
+                rows.Sort((s1, s2) => s1.departmentID.CompareTo(s2.departmentID));
+            }
+
+            //Overwrite the sorted rows back into the worksheet
+            for (int r=2; r<=endRow; r++)
+            {
+                currentWorksheet.Cells[r, 1].Value = rows[r - 2].jobTitle;
+                currentWorksheet.Cells[r, 2].Value = rows[r - 2].departmentID;
+                currentWorksheet.Cells[r, 3].Value = rows[r - 2].salary;
+            }
         }
+
         struct row
         {
             public string jobTitle;
             public string departmentID;
-            public string salary;
+            public double salary;
+
+            public row(string j, string d, double s)
+            {
+                jobTitle = j;
+                departmentID = d;
+                salary = s;
+            }
         }
     }
 }

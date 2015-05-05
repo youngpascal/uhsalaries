@@ -17,7 +17,6 @@ namespace SalaryStatistics
 
            // file.Close();
 
-            Environment.Exit(1);
         }
     }
 }
