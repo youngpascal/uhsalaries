@@ -35,6 +35,7 @@ namespace SalaryStatistics
         private bool fitlered = false;
         private int jobFilterCount = 0;
         private int departmentFilterCount = 0;
+        private int summaryWorksheetInsertionPoint = 2;
 
         System.IO.StreamWriter file;
 

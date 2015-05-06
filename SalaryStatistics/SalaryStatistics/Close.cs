@@ -12,7 +12,11 @@ namespace SalaryStatistics
 
            // fixTheFormatting();
 
-           // excelFile.Stream.Close();
+            excelFile.Stream.Close();
+            inputOnePackage.Stream.Close();
+            inputTwoPackage.Stream.Close();
+            inputThreePackage.Stream.Close();
+
             MessageBox.Show("File Saved and Closed to " + newFilePath);
             //file.writeline("File saved to " + newFilePath);
             //file.writeline("Operation ran successfully on: " + DateTime.Now);

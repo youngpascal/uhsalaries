@@ -12,6 +12,7 @@ namespace SalaryStatistics
         {
             char[] valueString;
             ExcelWorksheet currentWorksheet;
+            ExcelWorksheet summaryWorksheet;
             string[] statisticHeaders = { "1st Quartile", "Mean", "3rd Quartile", "Median", "Associate Prof. Compression" };
             string currentJobTitle;
             List<string> jobTitles = new List<string>();
@@ -24,6 +25,7 @@ namespace SalaryStatistics
             foreach (string worksheetName in processedWorksheetNames)
             {
                 currentWorksheet = excelFile.Workbook.Worksheets[worksheetName];
+                //summaryWorksheet = excelFile.Workbook.Worksheets["Summary"];
                 jobTitles = new List<string>();
 
                 //Insert two blank Rows
@@ -95,6 +97,8 @@ namespace SalaryStatistics
                                 }
                             }                          
                         }
+                       // currentWorksheet.Cells[statInsertionRow, 1, statInsertionRow, 15].Copy(summaryWorksheet.Cells[summaryWorksheetInsertionPoint, 1, summaryWorksheetInsertionPoint, 15]);
+                       // summaryWorksheetInsertionPoint++;
                         statInsertionRow++;
                     }
                     else

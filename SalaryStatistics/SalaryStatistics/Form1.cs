@@ -16,10 +16,10 @@ namespace SalaryStatistics
 {
     public partial class Form1 : Form
     {
-        private String fiscalFilePath = @"C:\Users\josh\Desktop\Salary inputs\Input 0.xlsx";
-        private String inputOneFilePath = @"C:\Users\josh\Desktop\Salary inputs\Input 1.xlsx";
-        private String inputTwoFilePath = @"C:\Users\josh\Desktop\Salary inputs\Input 2.xlsx";
-        private String inputThreeFilePath = @"C:\Users\josh\Desktop\Salary inputs\Input 3.xlsx";
+        private String fiscalFilePath = "";//@"C:\Users\josh\Desktop\Salary inputs\Input 0.xlsx";
+        private String inputOneFilePath = ""; //@"C:\Users\josh\Desktop\Salary inputs\Input 1.xlsx";
+        private String inputTwoFilePath = ""; //@"C:\Users\josh\Desktop\Salary inputs\Input 2.xlsx";
+        private String inputThreeFilePath = ""; //@"C:\Users\josh\Desktop\Salary inputs\Input 3.xlsx";
         private Data theData;        
         Form1 myForm;
 
@@ -38,12 +38,11 @@ namespace SalaryStatistics
                 //FileStream fs = new FileStream(@"C:\salaryLog.txt", FileMode.CreateNew);
                // fs.Close();
             }
-
+            button6.Visible = false;
             label5.Text = fiscalFilePath;
             label6.Text = inputOneFilePath;
             label7.Text = inputTwoFilePath;
             label8.Text = inputThreeFilePath;
-            getFilters();
         }//end form load
 
         //Getter for From1's filePath string.
@@ -195,6 +194,12 @@ namespace SalaryStatistics
         {
             inputThreeFilePath = selectExcelSheets("Select 'inout 3' excel document containing UH data per specialty code.");
             label8.Text = inputThreeFilePath;
+            button6.Visible = true;
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            getFilters();
         }
     }
 }

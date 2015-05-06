@@ -80,6 +80,8 @@ namespace SalaryStatistics
 
             //Add the constants sheet
             addConstantSheet();
+
+            //excelFile.Workbook.Worksheets.Add("Summary");
         }
 
         public int searchForHeaderRow(string headerName, ExcelWorksheet currentWoksheet)
