@@ -10,6 +10,7 @@ namespace SalaryStatistics
             string newFilePath = Path.GetDirectoryName(filePath) + "\\" + "Processed " + Path.GetFileName(filePath);
             excelFile.SaveAs(new FileStream(newFilePath, FileMode.Create));
 
+            fixTheFormatting();
 
             MessageBox.Show("File Saved and Closed to " + newFilePath);
             //file.writeline("File saved to " + newFilePath);
@@ -17,6 +18,17 @@ namespace SalaryStatistics
 
            // file.Close();
 
+        }
+
+        private void fixTheFormatting()
+        {
+            foreach (string worksheetName in processedWorksheetNames)
+            {
+                ExcelWorksheet currentWorksheet = excelFile.Workbook.Worksheets[worksheetName];
+
+                currentWorksheet.Cells["D2:G2"].Style.Numberformat.Format = "$###,###,##0";
+                currentWorksheet.Cells["A:Z"].AutoFitColumns();
+            }
         }
     }
 }

@@ -16,10 +16,10 @@ namespace SalaryStatistics
 {
     public partial class Form1 : Form
     {
-        private String fiscalFilePath = @"E:\UH Detailed Faculty Roster FY2013 anonymous.xlsx";
-        private String inputOneFilePath = @"E:\Input 1 new assist prof average salary.xlsx";
-        private String inputTwoFilePath = @"E:\Input 2 Tier 1 data.xlsx";
-        private String inputThreeFilePath = @"E:\Input 3 UH average salary data per specialty.xlsx";
+        private String fiscalFilePath = @"C:\Users\josh\Desktop\Salary inputs\Input 0.xlsx";
+        private String inputOneFilePath = @"C:\Users\josh\Desktop\Salary inputs\Input 1.xlsx";
+        private String inputTwoFilePath = @"C:\Users\josh\Desktop\Salary inputs\Input 2.xlsx";
+        private String inputThreeFilePath = @"C:\Users\josh\Desktop\Salary inputs\Input 3.xlsx";
         private Data theData;        
         Form1 myForm;
 
@@ -39,11 +39,10 @@ namespace SalaryStatistics
                // fs.Close();
             }
 
-            //fiscalFilePath = selectExcelSheets("Select excel document containing UH fiscal year data.");
-            //inputOneFilePath = selectExcelSheets("Select 'input 1' excel document containing Average New Assistant Professor Salaries.");
-            //inputTwoFilePath = selectExcelSheets("Select 'input 2' excel document containing Tier 1 data.");
-            //inputThreeFilePath = selectExcelSheets("Select 'inout 3' excel document containing UH data per specialty code.");
-
+            label5.Text = fiscalFilePath;
+            label6.Text = inputOneFilePath;
+            label7.Text = inputTwoFilePath;
+            label8.Text = inputThreeFilePath;
             getFilters();
         }//end form load
 
@@ -171,6 +170,31 @@ namespace SalaryStatistics
             }//end if dialogresult=ok
 
             return filePath;
+        }
+
+        //import input 0
+        private void button2_Click(object sender, EventArgs e)
+        {
+            fiscalFilePath = selectExcelSheets("Select excel document containing UH fiscal year data.");
+            label5.Text = fiscalFilePath;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            inputOneFilePath = selectExcelSheets("Select 'input 1' excel document containing Average New Assistant Professor Salaries.");
+            label6.Text = inputOneFilePath;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            inputTwoFilePath = selectExcelSheets("Select 'input 2' excel document containing Tier 1 data.");
+            label7.Text = inputTwoFilePath;
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            inputThreeFilePath = selectExcelSheets("Select 'inout 3' excel document containing UH data per specialty code.");
+            label8.Text = inputThreeFilePath;
         }
     }
 }

@@ -66,13 +66,21 @@ namespace SalaryStatistics
 
                         var query = (from cell in excelFile.Workbook.Worksheets["Average New Asst Prof Salary"].Cells["B:B"] where cell.Value is string && (string)cell.Value == currentWorksheet.Name select cell);
 
-                                                if (query == null)
+                        if (query == null)
                         {
-                            currentWorksheet.Cells[statInsertionRow, 8].Formula = currentWorksheet.Cells[statInsertionRow, 7].Start.Address + "/" + query.First().FullAddress;
+                            currentWorksheet.Cells[statInsertionRow, 8].Value = "Missing Assist. Average";
                         }
                         else
                         {
-                            currentWorksheet.Cells[statInsertionRow, 8].Value = "Missing Assist. Average";
+                            //im better than kyle
+                            foreach (var cell in excelFile.Workbook.Worksheets["Average New Asst Prof Salary"].Cells)
+                            {   //i write superior code
+                                if (cell.Value == currentWorksheet.Name)
+                                {   //offset needs to be 2 to get column D
+                                    int colOffset = cell.Start.Column + 2;
+                                    currentWorksheet.Cells[statInsertionRow, 8].Formula = currentWorksheet.Cells[statInsertionRow, 7].Start.Address + "/" +  excelFile.Workbook.Worksheets["Average New Asst Prof Salary"].Cells["D"+cell.Start];
+                                }
+                            }                          
                         }
                         statInsertionRow++;
                     }
@@ -101,7 +109,23 @@ namespace SalaryStatistics
 
                         if (query.GetEnumerator().MoveNext())
                         {
-                            currentWorksheet.Cells[statInsertionRow, 8].Formula = currentWorksheet.Cells[statInsertionRow, 7].Start.Address + "/" + query.First().FullAddress;
+                            //well kyle it seems as if you need my help again
+                            //so let me fix your problems for you sport
+                            //you passed in the address of the cell that
+                            //the query returned, but we need the corresponding
+                            //cell in column 'D'. This fixed that
+                            string theCell = query.First().FullAddress;
+                            char[] changeColumn = theCell.ToCharArray();
+                            for (int i = 1; i < changeColumn.Length; i++)
+                            {
+                                if (changeColumn[i].Equals('B') && changeColumn[i-1].Equals('!'))
+                                {
+                                    changeColumn[i] = 'D';
+                                }
+                            }
+                            string newCell = new string(changeColumn);
+
+                            currentWorksheet.Cells[statInsertionRow, 8].Formula = currentWorksheet.Cells[statInsertionRow, 7].Start.Address + "/" + newCell;
                         }
                         else
                         {
