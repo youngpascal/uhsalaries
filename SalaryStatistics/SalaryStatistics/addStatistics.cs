@@ -72,13 +72,26 @@ namespace SalaryStatistics
                         }
                         else
                         {
-                            //im better than kyle
+                            //im better than kyle // LOL you wish
                             foreach (var cell in excelFile.Workbook.Worksheets["Average New Asst Prof Salary"].Cells)
                             {   //i write superior code
-                                if (cell.Value == currentWorksheet.Name)
-                                {   //offset needs to be 2 to get column D
-                                    int colOffset = cell.Start.Column + 2;
-                                    currentWorksheet.Cells[statInsertionRow, 8].Formula = currentWorksheet.Cells[statInsertionRow, 7].Start.Address + "/" +  excelFile.Workbook.Worksheets["Average New Asst Prof Salary"].Cells["D"+cell.Start];
+                                string name = currentWorksheet.Name;
+                                if (cell.Value != null)
+                                {
+                                    if (cell.Value.ToString() == name)
+                                    {   //Offset the column of to the salary 
+                                        string theCell = cell.FullAddress;
+                                        char[] changeColumn = theCell.ToCharArray();
+                                        for (int i = 1; i < changeColumn.Length; i++)
+                                        {
+                                            if (changeColumn[i].Equals('B') && changeColumn[i - 1].Equals('!'))
+                                            {
+                                                changeColumn[i] = 'D';
+                                            }
+                                        }
+                                        string newCell = new string(changeColumn);
+                                        currentWorksheet.Cells[statInsertionRow, 8].Formula = currentWorksheet.Cells[statInsertionRow, 7].Start.Address + "/" + newCell;
+                                    }
                                 }
                             }                          
                         }
@@ -113,7 +126,7 @@ namespace SalaryStatistics
                             //so let me fix your problems for you sport
                             //you passed in the address of the cell that
                             //the query returned, but we need the corresponding
-                            //cell in column 'D'. This fixed that
+                            //cell in column 'D'. This fixes that
                             string theCell = query.First().FullAddress;
                             char[] changeColumn = theCell.ToCharArray();
                             for (int i = 1; i < changeColumn.Length; i++)
@@ -143,8 +156,11 @@ namespace SalaryStatistics
                 currentWorksheet.Cells[2, 5].Formula = "AVERAGE(C2:C2000)";
                 currentWorksheet.Cells[2, 6].Formula = "QUARTILE(C2:C2000,3)";
                 currentWorksheet.Cells[2, 7].Formula = "MEDIAN(C2:C2000,1)";
-                currentWorksheet.Cells[2, 8].Formula = "=G2/'Average New Asst Prof Salary'!D2";
-
+                
+                if (worksheetName[0].Equals('H') || worksheetName.Equals('h'))
+                {
+                    currentWorksheet.Cells[2, 8].Formula = "=G2/'Average New Asst Prof Salary'!D2";
+                }
                 //Apply Excel formatting
                 currentWorksheet.Row(2).Style.Font.Bold = true;
                 currentWorksheet.Row(2).Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
