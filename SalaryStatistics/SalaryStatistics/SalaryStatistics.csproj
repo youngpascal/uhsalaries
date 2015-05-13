@@ -51,6 +51,7 @@
   <ItemGroup>
     <Compile Include="addConstantSheet.cs" />
     <Compile Include="addStatistics.cs" />
+    <Compile Include="addTableOfContents.cs" />
     <Compile Include="Close.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>

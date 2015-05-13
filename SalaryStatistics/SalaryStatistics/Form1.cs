@@ -130,6 +130,7 @@ namespace SalaryStatistics
             Cursor.Current = Cursors.WaitCursor;
 
             theData.Process(searchFilters, filtered);
+            theData.populateTOC();
             theData.Close();
 
             Cursor.Current = Cursors.Default;

@@ -26,6 +26,9 @@ namespace SalaryStatistics
             tableofContents.Cells[1, 1].Value = "Job Titles";
             tableofContents.Cells[1, 3].Value = "Departments";
 
+            tableofContents.Cells[1, 1, 1, 3].Style.Font.Bold = true;
+            tableofContents.Cells[1, 1, 1, 3].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+
             //Create a new style for our hyperlinks
             var namedStyle = tableofContents.Workbook.Styles.CreateNamedStyle("HyperLink"); 
             namedStyle.Style.Font.UnderLine = true;
