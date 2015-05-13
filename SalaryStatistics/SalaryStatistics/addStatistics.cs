@@ -74,9 +74,8 @@ namespace SalaryStatistics
                         }
                         else
                         {
-                            //im better than kyle // LOL you wish
                             foreach (var cell in excelFile.Workbook.Worksheets["Average New Asst Prof Salary"].Cells)
-                            {   //i write superior code
+                            {
                                 string name = currentWorksheet.Name;
                                 if (cell.Value != null)
                                 {
@@ -126,11 +125,6 @@ namespace SalaryStatistics
 
                         if (query.GetEnumerator().MoveNext())
                         {
-                            //well kyle it seems as if you need my help again
-                            //so let me fix your problems for you sport
-                            //you passed in the address of the cell that
-                            //the query returned, but we need the corresponding
-                            //cell in column 'D'. This fixes that
                             string theCell = query.First().FullAddress;
                             char[] changeColumn = theCell.ToCharArray();
                             for (int i = 1; i < changeColumn.Length; i++)

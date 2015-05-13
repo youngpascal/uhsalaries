@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using System.Linq;
+using System.Drawing;
+
 namespace SalaryStatistics
 {
     public partial class Data
@@ -122,6 +124,12 @@ namespace SalaryStatistics
 
                     startKey++;
                 }
+
+                currentWorksheet.Cells["I1"].Hyperlink = new ExcelHyperLink("'Table Of Contents'!A1", "Back to Table Of Contents");
+                currentWorksheet.Cells["I1"].Style.Font.UnderLine = true;
+                currentWorksheet.Cells["I1"].Style.Font.Color.SetColor(Color.Blue);
+                currentWorksheet.Cells["A:Z"].AutoFitColumns();
+
                 currentWorksheet.Cells["A:Z"].AutoFitColumns();
             }
             //*************************************End row copy********************************************************//
@@ -282,6 +290,31 @@ namespace SalaryStatistics
             for (int r = 2; r <= endRow; r++)
             {
                 rows.Add(new row((string)currentWorksheet.Cells[r, 1].Value, (string)currentWorksheet.Cells[r, 2].Value, (double)currentWorksheet.Cells[r, 3].Value));
+            }
+
+            bool found;
+
+            if (!currentWorksheet.Name[0].Equals('H') && !currentWorksheet.Name[0].Equals('h'))
+            {
+                foreach (string worksheetName in processedWorksheetNames)
+                {
+                    found = false;
+                    if (worksheetName[0].Equals('H') || worksheetName[0].Equals('h'))
+                    {
+                        foreach (row aRow in rows)
+                        {
+                            if (aRow.departmentID.Equals(worksheetName))
+                            {
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found)
+                        {
+                            rows.Add(new row("none", worksheetName, 0.0));
+                        }
+                    }
+                }
             }
 
             //Sort the rows in the list
