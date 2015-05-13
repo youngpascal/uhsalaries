@@ -10,13 +10,11 @@ namespace SalaryStatistics
 {
     public partial class Data
     {
+        private List<String> departments = new List<string>();
+        private List<String> jobTitles = new List<string>();
 
         public void populateTOC()
         {
-            //Temporary Lists for creating hyperlinks
-            List<String> departments = new List<string>();
-            List<String> jobTitles = new List<string>();
-
             //Add Table Of Contentds page and push to front of workbook
             excelFile.Workbook.Worksheets.Add("Table Of Contents");
             excelFile.Workbook.Worksheets.MoveToStart("Table Of Contents");
@@ -26,45 +24,27 @@ namespace SalaryStatistics
             tableofContents.Cells[1, 1].Value = "Job Titles";
             tableofContents.Cells[1, 3].Value = "Departments";
 
-            tableofContents.Cells[1, 1, 1, 3].Style.Font.Bold = true;
-            tableofContents.Cells[1, 1, 1, 3].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+            tableofContents.Cells[1, 1, 1, 10].Style.Font.Bold = true;
+            tableofContents.Cells[1, 1, 1, 10].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
 
             //Create a new style for our hyperlinks
             var namedStyle = tableofContents.Workbook.Styles.CreateNamedStyle("HyperLink"); 
             namedStyle.Style.Font.UnderLine = true;
             namedStyle.Style.Font.Color.SetColor(Color.Blue);
 
-            //Seperate all worksheet names by department and job title
-            foreach (string name in processedWorksheetNames)
-            {
-                if (name[0].Equals('H') || name[0].Equals('h'))
-                {
-                    departments.Add(name);
-                }
-                else
-                {
-                    jobTitles.Add(name);
-                }
-            }
-
-            //Sort the lists by alphabetical order
-            jobTitles.Sort();
-            departments.Sort();
-
             //Populate respective columns with hyperlinks
             int tracker = 2;
-
-            foreach (string title in jobTitles)
-            {
-                
+            List<string> jobs = getDepartments("Job Title");
+            foreach (string title in jobs)
+            { 
                 tableofContents.Cells[tracker, 1].Hyperlink = new ExcelHyperLink("'" + title + "'" + "!A1", title);
                 tableofContents.Cells[tracker, 1].StyleName = "HyperLink";
                 tracker++;
             }
 
             tracker = 2;
-
-            foreach (string dept in departments)
+            List<string> Departments = getDepartments("Departments");
+            foreach (string dept in Departments)
             {
                 tableofContents.Cells[tracker, 3].Hyperlink = new ExcelHyperLink("'" + dept + "'" + "!A1", dept);
                 tableofContents.Cells[tracker, 3].StyleName = "HyperLink";

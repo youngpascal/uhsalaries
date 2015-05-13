@@ -215,5 +215,22 @@ namespace SalaryStatistics
         {
             return listOfDepartmentFilters;
         }
+    
+        public List<string> getDepartments(string option)
+        {
+            //Sort the lists by alphabetical order
+            jobTitles.Sort();
+            departments.Sort();
+
+            if (option.Equals("Job Title"))
+            {
+                return jobTitles;
+            }
+            else
+            {
+                return departments;
+            }
+        }
+
     }
 }

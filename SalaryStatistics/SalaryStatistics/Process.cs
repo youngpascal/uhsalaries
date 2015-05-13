@@ -21,6 +21,20 @@ namespace SalaryStatistics
             List<string> searchFilters = filters;
             createWorksheets(getKeyColumns(), filters, preparedWorksheet, isFiltered);
 
+
+            //Seperate all worksheet names by department and job title
+            foreach (string name in processedWorksheetNames)
+            {
+                if (name[0].Equals('H') || name[0].Equals('h'))
+                {
+                    departments.Add(name);
+                }
+                else
+                {
+                    jobTitles.Add(name);
+                }
+            }
+
             addStatistics();
         }
 

@@ -104,9 +104,9 @@
             // button1
             // 
             this.button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.Location = new System.Drawing.Point(12, 184);
+            this.button1.Location = new System.Drawing.Point(12, 134);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(193, 254);
+            this.button1.Size = new System.Drawing.Size(570, 122);
             this.button1.TabIndex = 10;
             this.button1.Text = "RUN\r\nCALCULATION";
             this.button1.UseVisualStyleBackColor = true;
@@ -121,6 +121,7 @@
             this.checkedFilters.Size = new System.Drawing.Size(240, 304);
             this.checkedFilters.Sorted = true;
             this.checkedFilters.TabIndex = 13;
+            this.checkedFilters.Visible = false;
             // 
             // checkedDepartmentFilters
             // 
@@ -131,6 +132,7 @@
             this.checkedDepartmentFilters.Size = new System.Drawing.Size(125, 304);
             this.checkedDepartmentFilters.Sorted = true;
             this.checkedDepartmentFilters.TabIndex = 14;
+            this.checkedDepartmentFilters.Visible = false;
             // 
             // label4
             // 
@@ -239,7 +241,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(594, 450);
+            this.ClientSize = new System.Drawing.Size(594, 271);
             this.Controls.Add(this.button6);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label7);
