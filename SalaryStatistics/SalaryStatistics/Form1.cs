@@ -145,9 +145,9 @@ namespace SalaryStatistics
             Stream myStream = null;
 
             OpenFileDialog of = new OpenFileDialog();
-            of.InitialDirectory = "c:\\";
-            //of.Filter = "txt files (*.txt)|*.txt|All files (*.*)|*.*";
-            //of.FilterIndex = 2;
+            of.InitialDirectory = @"C:\Users\%USERNAME%";
+            of.Filter = "Excel files (*.xls*)|*.xls*|All files (*.*)|*.*";
+            of.FilterIndex = 1;
             of.Title = title;
             of.RestoreDirectory = true;
             string filePath = "";

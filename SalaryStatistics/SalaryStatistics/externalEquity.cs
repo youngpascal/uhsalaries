@@ -90,11 +90,11 @@ namespace SalaryStatistics
                 {
                    firstRow = row;
 
-                   while (weightedDeptPortions.Cells["B"+row].Value.ToString().Equals(deptName))
+                   while (weightedDeptPortions.Cells["B"+row].Value.ToString().ToUpper().Equals(deptName.ToString().ToUpper()))
                    {
                        counter++;
 
-                       if (!weightedDeptPortions.Cells["B"+ (row+1)].Value.ToString().Equals((deptName)))
+                       if (!weightedDeptPortions.Cells["B" + (row + 1)].Value.ToString().Equals(deptName))
                        {
                            toBreak = true;
                            wasFound = true;
@@ -112,7 +112,7 @@ namespace SalaryStatistics
 
                 if (wasFound)
                 {
-                    weightedDeptAvg.Cells[currentRow, 3].Formula = "SUM('Weighted Dept Salary Portions'!D" + firstRow + ":" + "'Weighted Dept Salary Portions'!D" + (firstRow + counter) + ")";
+                    weightedDeptAvg.Cells[currentRow, 3].Formula = "SUM('Weighted Dept Salary Portions'!D" + firstRow + ":" + "'Weighted Dept Salary Portions'!D" + (firstRow + counter - 1) + ")";
                 }
                 else
                 {

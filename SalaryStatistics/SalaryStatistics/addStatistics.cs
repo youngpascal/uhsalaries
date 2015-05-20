@@ -48,7 +48,6 @@ namespace SalaryStatistics
 
                     //If it's a department sheet compare based on job title, if it's a job title compare basedon department
                     if (currentWorksheet.Name[0] == 'H' || currentWorksheet.Name[0] == 'h')
-
                     {   //Loop downwards to count how many rows have the given value
                         while (currentWorksheet.Cells[r, 1].Value == currentWorksheet.Cells[r + numberOfRows, 1].Value)
                         {
@@ -61,7 +60,7 @@ namespace SalaryStatistics
                         currentWorksheet.Cells[statInsertionRow, 1].Value = currentWorksheet.Cells[r, 1].Value;
 
                         //Insert the Formulae
-                        currentWorksheet.Cells[statInsertionRow, 4].Formula = "QUARTILE(" + currentWorksheet.Cells[r, 3].Address + ":" + currentWorksheet.Cells[r + numberOfRows - 1, 3].Address + ",1)";
+                        currentWorksheet.Cells[statInsertionRow, 4].Formula = "QUARTILE(" + currentWorksheet.Cells[r , 3].Address + ":" + currentWorksheet.Cells[r + numberOfRows - 1, 3].Address + ",1)";
                         currentWorksheet.Cells[statInsertionRow, 5].Formula = "AVERAGE(" + currentWorksheet.Cells[r, 3].Address + ":" + currentWorksheet.Cells[r + numberOfRows - 1, 3].Address + ")";
                         currentWorksheet.Cells[statInsertionRow, 6].Formula = "QUARTILE(" + currentWorksheet.Cells[r, 3].Address + ":" + currentWorksheet.Cells[r + numberOfRows - 1, 3].Address + ",3)";
                         currentWorksheet.Cells[statInsertionRow, 7].Formula = "MEDIAN(" + currentWorksheet.Cells[r, 3].Address + ":" + currentWorksheet.Cells[r + numberOfRows - 1, 3].Address + ",1)";
@@ -87,7 +86,7 @@ namespace SalaryStatistics
                                         {
                                             if (changeColumn[i].Equals('B') && changeColumn[i - 1].Equals('!'))
                                             {
-                                                changeColumn[i] = 'D';
+                                                changeColumn[i] = 'E';
                                             }
                                         }
                                         string newCell = new string(changeColumn);
@@ -145,7 +144,7 @@ namespace SalaryStatistics
                             statInsertionRow++;
                     }
 
-                    r = r + numberOfRows + 1; //Increment the row to the next job title 
+                    r = r + numberOfRows; //Increment the row to the next job title 
                 }
 
                 //Insert the worksheet wide statistics
@@ -157,7 +156,7 @@ namespace SalaryStatistics
                 
                 if (worksheetName[0].Equals('H') || worksheetName.Equals('h'))
                 {
-                    currentWorksheet.Cells[2, 8].Formula = "=G2/'Average New Asst Prof Salary'!D2";
+                    currentWorksheet.Cells[2, 8].Formula = "=G2/'Average New Asst Prof Salary'!E2";
                 }
                 //Apply Excel formatting
                 currentWorksheet.Row(2).Style.Font.Bold = true;
