@@ -16,10 +16,25 @@ namespace SalaryStatistics
 {
     public partial class Form1 : Form
     {
-        private String fiscalFilePath = ""; // @"C:\Users\josh\Desktop\Salary inputs\Input 0.xlsx";
-        private String inputOneFilePath =  ""; // @"C:\Users\josh\Desktop\Salary inputs\Input 1.xlsx";
-        private String inputTwoFilePath = ""; //@"C:\Users\josh\Desktop\Salary inputs\Input 2.xlsx";
-        private String inputThreeFilePath = "";//@"C:\Users\josh\Desktop\Salary inputs\Input 3.xlsx";
+        
+        private String fiscalFilePath = "";
+        private String inputOneFilePath =  "";
+        private String inputTwoFilePath = "";
+        private String inputThreeFilePath = "";
+        
+        /*
+        private String fiscalFilePath = @"E:\UH Detailed Faculty Roster FY2013 anonymous.xlsx";
+        private String inputOneFilePath = @"E:\Input 1 new assist prof average salary.xlsx";
+        private String inputTwoFilePath = @"E:\Input 2 Tier 1 data.xlsx";
+        private String inputThreeFilePath = @"E:\Input 3 UH average salary data per specialty.xlsx";
+        s
+        /*
+        private String fiscalFilePath =  @"C:\Users\josh\Desktop\Salary inputs\Input 0.xlsx";
+        private String inputOneFilePath = @"C:\Users\josh\Desktop\Salary inputs\Input 1.xlsx";
+        private String inputTwoFilePath = @"C:\Users\josh\Desktop\Salary inputs\Input 2.xlsx";
+        private String inputThreeFilePath = @"C:\Users\josh\Desktop\Salary inputs\Input 3.xlsx";
+        */
+
         private Data theData;        
         Form1 myForm;
 

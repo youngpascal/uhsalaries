@@ -216,7 +216,7 @@ namespace SalaryStatistics
             return listOfDepartmentFilters;
         }
     
-        public List<string> getDepartments(string option)
+        public List<string> getLists(string option)
         {
             //Sort the lists by alphabetical order
             jobTitles.Sort();

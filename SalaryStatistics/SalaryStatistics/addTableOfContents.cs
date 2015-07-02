@@ -34,7 +34,7 @@ namespace SalaryStatistics
 
             //Populate respective columns with hyperlinks
             int tracker = 2;
-            List<string> jobs = getDepartments("Job Title");
+            List<string> jobs = getLists("Job Title");
             foreach (string title in jobs)
             { 
                 tableofContents.Cells[tracker, 1].Hyperlink = new ExcelHyperLink("'" + title + "'" + "!A1", title);
@@ -43,7 +43,7 @@ namespace SalaryStatistics
             }
 
             tracker = 2;
-            List<string> Departments = getDepartments("Departments");
+            List<string> Departments = getLists("Departments");
             foreach (string dept in Departments)
             {
                 tableofContents.Cells[tracker, 3].Hyperlink = new ExcelHyperLink("'" + dept + "'" + "!A1", dept);
