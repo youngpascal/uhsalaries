@@ -41,7 +41,7 @@ namespace SalaryStatistics
                 statInsertionRow = 3; //Header row is 1, All row is 2
 
                 //Loop through all rows in the worksheet
-                for (int r = 4; r < endRow; )
+                for (int r = 4; r <=endRow; )
                 {
                     //Keep track of how many rows have a given value
                     numberOfRows = 1;
